@@ -6,9 +6,10 @@
       "direction": "in",
       "name": "req",
       "methods": [
+        "patch",
         "post"
       ],
-      "route": "session"
+      "route": "session/{userId}/{id}"
     },
     {
       "type": "http",
@@ -16,5 +17,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/session-start/index.js"
+  "scriptFile": "../dist/session-update/index.js"
 }

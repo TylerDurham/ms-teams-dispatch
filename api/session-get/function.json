@@ -6,9 +6,9 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "post"
+        "get"
       ],
-      "route": "session"
+      "route": "session/{userId}/{id}"
     },
     {
       "type": "http",
@@ -16,5 +16,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/session-start/index.js"
+  "scriptFile": "../dist/session-get/index.js"
 }
