@@ -1,6 +1,8 @@
+import * as pkg from '../package.json';
 import { AzureNamedKeyCredential, TableClient } from "@azure/data-tables";
 import { Result, ResultType, ResultTypeError } from "./result-lib";
 import { ApiResponseCode } from "./api-pipeline";
+import { DispatchSessionStatus } from './schema-lib';
 
 const account = process.env["AzStorageTableAccountName"];
 const accountKey = process.env["AzStorageTableAccountKey"];
@@ -49,9 +51,16 @@ export const createSession = async ( session: DbDispatchSession ): Promise<Resul
 
     const client = getTableClient();
     if (client.type == ResultType.Error) { return client as ResultTypeError; }
+    session.id = getInvertedTicks();
+    session.version = pkg.version;
+    session.status = DispatchSessionStatus.Waiting;
+
+    const { userId, id, ...record } = session;
+    record.partitionKey = userId;
+    record.rowKey = id;
 
     try {
-        await client.value.createEntity( session );
+        await client.value.createEntity( record );
         return {
             type: ResultType.Success,
             value: session
@@ -115,4 +124,14 @@ const handleDbError = ( err: DbError, partitionKey: string, rowKey: string ): Re
         }
     }
     return { type: ResultType.Error, message: message, name: err.name, details: err.stack, code: err.statusCode }
+}
+
+/**
+ * Takes the current time (in ticks) and subtracts from the maximum date ticks allowed in JavaScript.
+ * @returns The inverted ticks as a string.
+ */
+ const getInvertedTicks = () => {
+    const MAX_DATE = 8640000000000000;
+    const invertedTicks = MAX_DATE - Date.now();
+    return invertedTicks.toString();
 }

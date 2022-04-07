@@ -1,1 +1,2 @@
+{"default":true,"data":[{"name":"userId","value":"test@session-start.com"}],"sortNum":10000,"name":"session-start","created":"2022-04-07T21:50:46.575Z","modified":"2022-04-07T21:51:17.723Z","_id":"3f73cbab-c1d9-4656-a59a-68657371e15e"}
 {"default":false,"data":[{"name":"userId","value":"tyler@3bcdst.onmicrosoft.com"}],"sortNum":-1,"name":"(Global Env)","created":"2022-04-07T19:26:40.383Z","modified":"2022-04-07T19:29:59.378Z","_id":"607d7a5a-331f-40bb-8dca-5111eae40c20","global":true}

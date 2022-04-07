@@ -51,3 +51,8 @@ export const extendedSchema = PrimaryKey.keys({
     "status": joi.number(),
     "version": joi.string()
 });
+
+export const Insert = PartitionKey.keys({
+    "command": joi.string().required().valid(...VALID_COMMANDS),
+    "callback": joi.string().uri()
+});
