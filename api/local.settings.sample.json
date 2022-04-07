@@ -1,0 +1,11 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+      "AzureWebJobsStorage": "",
+      "FUNCTIONS_WORKER_RUNTIME": "node",
+      "AzStorageTableAccountName": "YOUR_AZ_STORAGE_ACCOUNT_NAME",
+      "AzStorageTableAccountKey": "YOUR_AZ_STORAGE_ACCOUNT_KEY",
+      "AzStorageTableName": "YOUR_AZ_STORAGE_TABLE_NAME",
+      "ValidCommands":"COMMAND_1,COMMAND_2,COMMAND_3"
+    }
+  }
