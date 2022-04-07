@@ -55,9 +55,7 @@ export const createSession = async ( session: DbDispatchSession ): Promise<Resul
 
 export const getSession = async function( pk: string, rk: string ) : Promise<Result<DbDispatchSession>>  {
     const client = getTableClient();
-    if (client.type == ResultType.Error) {
-        return client as ResultTypeError;
-    }
+    if (client.type == ResultType.Error) { return client; }
 
     try {
         let result = await client.value.getEntity( pk, rk );

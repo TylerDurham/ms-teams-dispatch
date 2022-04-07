@@ -1,10 +1,9 @@
 {
   "name": "api",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "",
   "scripts": {
-    "build": "tsc",
-    "build-dev": "tsc && node ./build/index.js",
+    "build": "tsc  && node ./build/index.js",
     "watch": "tsc -w",
     "prestart": "npm run build",
     "start": "func start",
