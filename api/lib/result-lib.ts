@@ -3,9 +3,10 @@ export enum ResultType {
     Error
 }
 
-export type ResultTypeSuccess = {
+export type ResultTypeSuccess<T> = {
     type: ResultType,
-    value?: object
+    value?: T,
+    [ key: string ]: any
 }
 
 export type ResultTypeError = {
@@ -13,4 +14,8 @@ export type ResultTypeError = {
     message: string,
     name: string,
     details: any
+    [ key: string ]: any
 }
+
+export type Result<T> = ResultTypeSuccess<T> | ResultTypeError
+

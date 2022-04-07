@@ -6,6 +6,24 @@ const VALID_COMMANDS = ( process.env["ValidCommands"] ) ? process.env["ValidComm
 if(VALID_COMMANDS.length == 0) console.warn( "WARNING: No ValidCommands configured.");
 
 /**
+ * Set of values that indicate the status of a dispatch session.
+ */
+ export enum DispatchSessionStatus {
+    Waiting = 1,
+    Completed = 2,
+    Error = 8
+}
+
+export interface IDispatchSession {
+    userId: string;
+    id: string;
+    command: string;
+    status: DispatchSessionStatus;
+    callback?: string;
+    version?: string;
+}
+
+/**
  * Represents the partitionId of a session.
  */
 export const PartitionKey = joi.object( {

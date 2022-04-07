@@ -1,33 +1,79 @@
+import { AzureNamedKeyCredential, TableClient } from "@azure/data-tables";
+import { Result, ResultType, ResultTypeError } from "./result-lib";
 
 const account = process.env["AzStorageTableAccountName"];
 const accountKey = process.env["AzStorageTableAccountKey"];
 const tableName = process.env["AzStorageTableName"];
 
-export enum ResultType {
-    Success,
-    Error
-}
+const getTableClient = function(): Result<TableClient> {
 
-export type ResultTypeSuccess = {
-    type: ResultType,
-    value?: object
-}
-
-export type ResultTypeError = {
-    type: ResultType,
-    message: string,
-    name: string,
-    details: any
-}
-
-export const create = function( partitionId: string, rowKey: string ) {
     if ( account == undefined || accountKey == undefined|| tableName == undefined ) {
         console.warn(`WARNING: Azure Storage has not been configured.`);
-        let err = new Error();
-        err.message = "Data storage has not been configured.";
-        err.name = "ConfigurationError"
+        return {
+            type: ResultType.Error, message: "Data storage has not been configured.", name: "ConfigurationError"
+        }
+    }
 
-        throw err;
-        
+    try {
+        const credential = new AzureNamedKeyCredential(account, accountKey);
+        return {
+            type: ResultType.Success,
+            value: new TableClient(`https://${account}.table.core.windows.net`, tableName, credential)
+        }
+    } catch (error) {
+        const err = error as Error;
+
+        return {
+            type: ResultType.Error,
+            message: err.message,
+            name: err.name
+        }
+    }
+}
+
+type DbDispatchSession = {
+    [ key: string ]: any;
+}
+
+export const createSession = async ( session: DbDispatchSession ): Promise<Result<DbDispatchSession>> => {
+
+    const client = getTableClient();
+    if (client.type == ResultType.Error) {
+        return client as ResultTypeError;
+    }
+
+    try {
+        const result = await client.value.createEntity( session ) as DbDispatchSession;
+        return {
+            type: ResultType.Success,
+            value: session
+        }
+    } catch ( error ) {
+        //return handleDbError( error as DbError, session );
+    }
+}
+
+export const getSession = async function( pk: string, rk: string ) : Promise<Result<DbDispatchSession>>  {
+    const client = getTableClient();
+    if (client.type == ResultType.Error) {
+        return client as ResultTypeError;
+    }
+
+    try {
+        let result = await client.value.getEntity( pk, rk );
+        let { partitionKey, rowKey, ...rest } = result;
+        result.userId = partitionKey;
+        result.id = rowKey;
+        return {
+            type: ResultType.Success,
+            value: result
+        }
+    } catch ( err ) {
+        return {
+            type: ResultType.Error,
+            message: err.message,
+            name: err.name,
+            details: err.stack
+        }
     }
 }

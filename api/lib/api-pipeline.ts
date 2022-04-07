@@ -1,5 +1,8 @@
 import { Context, HttpRequest } from '@azure/functions';
 import * as joi from 'joi';
+import { Result, ResultType } from './result-lib';
+
+export { ResultType }
 
 export enum ApiResponseCode {
     OK = 200,
@@ -7,26 +10,7 @@ export enum ApiResponseCode {
     InternalServerError = 500
 }
 
-export enum ResultType {
-    Success,
-    Error
-}
-
-export type ResultTypeSuccess = {
-    type: ResultType,
-    code: ApiResponseCode.OK,
-    value?: object
-}
-
-export type ResultTypeError = {
-    type: ResultType,
-    code: ApiResponseCode.BadRequest | ApiResponseCode.InternalServerError
-    message: string,
-    name: string,
-    details: any
-}
-
-export type Result = ResultTypeSuccess | ResultTypeError
+export type ApiResult<T> = Result<T> & { code: ApiResponseCode }
 
 export enum ValidationOptions {
     None = 0,
@@ -34,7 +18,7 @@ export enum ValidationOptions {
     UseRequestParams = 2
 }
 
-export type ApiFunction = ( context: Context, req: HttpRequest ) => Promise<Result>
+export type ApiFunction = ( context: Context, req: HttpRequest ) => Promise<ApiResult<object>>
 
 export class ApiPipeline {
 
@@ -66,7 +50,8 @@ export class ApiPipeline {
     public listen() {
         const self = this;
         return async (context: Context, req: HttpRequest) => {
-            self._handleListen( context, req )
+            return self._handleListen( context, req );
+            //context.done()
         }
     }
 
@@ -74,7 +59,7 @@ export class ApiPipeline {
 
     }
 
-    private _handleValidate( context: Context, req: HttpRequest ): Result {
+    private _handleValidate( context: Context, req: HttpRequest ): ApiResult<any> {
         if ( this._needToValidate ) {
 
             let inputs =  this._parseRequest(req, this._validationOptions );
@@ -114,19 +99,27 @@ export class ApiPipeline {
 
     private async _handleListen(context: Context, req: HttpRequest) {
 
-        let result = this._handleValidate( context, req );
+        let result;
+        if ( this._needToValidate ) result = this._handleValidate( context, req );
+        if ( result.type == ResultType.Success ) result = await this._execute( context, req );
 
-        if ( result.type == ResultType.Error ) {
-            return this._handleResponse( context, result )
-        } else {
-            result = await this._execute( context, req );
-            return this._handleResponse( context, result );
+        const { code, ...response } = result;
+
+        context.res = {
+            statusCode: code,
+            headers: {
+                "Content-Type": "application/json",
+                "server": ""
+            },
+            body: response
         }
+        context.done();
+        
     }
 
-    private _handleResponse( context: Context, result: Result ) {
+    private _handleResponse( context: Context, result: ApiResult<any> ) {
         context.res = {
-            code: result.code,
+            statusCode: result.code,
             headers: {
                 "Content-Type": "application/json",
                 "server": ""
