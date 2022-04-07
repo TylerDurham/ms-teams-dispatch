@@ -6,5 +6,32 @@
 	],
 	"settings": {
 		"debug.internalConsoleOptions": "neverOpen"
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+		{
+			"name": "Attach by Process ID",
+			"processId": "${command:PickProcess}",
+			"request": "attach",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"type": "node"
+		},
+			{
+				"type": "pwa-node",
+				"request": "launch",
+				"name": "Launch Program",
+				"skipFiles": [
+					"<node_internals>/**"
+				],
+				"program": "/home/tyler/development/ms-teams-dispatch/api/lib/api-pipeline.ts",
+				"__workspaceFolder": "/home/tyler/development/ms-teams-dispatch/api/lib",
+				"outFiles": [
+					"${workspaceFolder}/**/*.js"
+				]
+			}
+		]
 	}
 }

@@ -1,4 +1,5 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
+import { ApiPipeline } from "../lib/api-pipeline";
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     context.log('HTTP trigger function processed a request.');
@@ -12,9 +13,13 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         body: responseMessage
     };
 
+    //console.log(context.bindingData)
     console.log(context.bindingData)
-    console.log(context.bindings)
+    //console.log(context.bindingDefinitions)
 
 };
 
-export default httpTrigger;
+const pipeline = new ApiPipeline()
+    .listen();
+
+export default pipeline;
