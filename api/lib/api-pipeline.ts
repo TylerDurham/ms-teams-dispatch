@@ -1,4 +1,4 @@
-import { Context, HttpRequest } from '@azure/functions';
+import { Context, HttpRequest, HttpRequestHeaders } from '@azure/functions';
 import * as joi from 'joi';
 import { Result, ResultType } from './result-lib';
 
@@ -21,7 +21,7 @@ export enum ParseOptions {
 export type ApiFunction = ( context: Context, req: HttpRequest ) => Promise<Result<object>>
 
 export class ApiPipeline {
-
+    private _headers;
     private _needToValidate = false;
     private _validationSchema: joi.ObjectSchema = null;
     private _validationOptions: ParseOptions = ParseOptions.None;
@@ -29,6 +29,11 @@ export class ApiPipeline {
 
     constructor() {
         this._needToValidate = false;
+    }
+
+    public requireHeaders( headers: HttpRequestHeaders ) {
+        this._headers = headers;
+        return this;
     }
 
     public execute( fn: ApiFunction ) {
@@ -95,12 +100,18 @@ export class ApiPipeline {
 
     private async _handleListen(context: Context, req: HttpRequest) {
 
-        console.log(req.headers)
-
         let result: Result<any>;
-        if ( this._needToValidate ) result = this._handleValidate( context, req );
+
+        // Check HTTP Request Headers
+        if ( this._headers ) result = this.checkRequestHeaders(req);
+
+        // All good? Validate incoming input values
+        if ( result.type == ResultType.Success && this._needToValidate ) result = this._handleValidate( context, req );
+
+        // All good? Execute the main function
         if ( result.type == ResultType.Success ) result = await this._execute( context, req );
 
+        // Do we have an error?
         if ( result.type == ResultType.Error ) {
 
             // Hide error details from external callers.
@@ -122,6 +133,33 @@ export class ApiPipeline {
         }
         context.done();
         
+    }
+
+    private checkRequestHeaders( req: HttpRequest ) {
+        if (this._headers) {
+            console.log(req.headers);
+            console.log(`Number of headers: ${this._headers.length}`);
+            for (let prop in this._headers) {
+                const headerValue = req.headers[prop];
+                if (headerValue && headerValue.includes(this._headers[prop])) {
+                    console.log(`Required header "${prop}" with a value of "${this._headers[prop]}" is present.`);
+    
+                } else {
+                    console.error(`Required header "${prop}" with a value of "${this._headers[prop]}" is missing.`);
+                    return {
+                        type: ResultType.Error,
+                        code: ApiResponseCode.BadRequest,
+                        message: `Required header "${prop}" with a value of "${this._headers[prop]}" is missing.`,
+                        name: "HeaderError",
+                        details: {}
+                    }
+                }
+            }
+        }
+
+        return {
+            type: ResultType.Success
+        }
     }
 
     private _handleResponse( context: Context, result: Result<any> ) {
