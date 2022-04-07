@@ -22,4 +22,6 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
 const pipeline = new ApiPipeline()
     .listen();
 
+    if ( httpTrigger ) true
+
 export default pipeline;

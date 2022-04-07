@@ -9,7 +9,7 @@ const tableName = process.env["AzStorageTableName"];
 type DbError = {
     message: string,
     name: string,
-    stack: any,
+    stack: unknown,
     code: string,
     statusCode: number | undefined
 }
@@ -41,6 +41,7 @@ const getTableClient = function(): Result<TableClient> {
 }
 
 type DbDispatchSession = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [ key: string ]: any;
 }
 
@@ -50,7 +51,7 @@ export const createSession = async ( session: DbDispatchSession ): Promise<Resul
     if (client.type == ResultType.Error) { return client as ResultTypeError; }
 
     try {
-        const result = await client.value.createEntity( session ) as DbDispatchSession;
+        await client.value.createEntity( session );
         return {
             type: ResultType.Success,
             value: session
@@ -65,10 +66,11 @@ export const getSession = async function( partitionKey: string, rowKey: string )
     if (client.type == ResultType.Error) { return client; }
 
     try {
-        let result = await client.value.getEntity( partitionKey, rowKey );
+        const result = await client.value.getEntity( partitionKey, rowKey );
 
         // Don't let callers know we are using Azure Tables. Pull out certain properties...
-        let { partitionKey:pk, rowKey:rk, "odata.metadata":odata_metadata, ...record } = result;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { partitionKey:pk, rowKey:rk, "odata.metadata":odata_metadata, ...record } = result;
         
         // And rename partitionKey and rowKey
         record.userId = pk;

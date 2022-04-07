@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 import { Context, HttpRequest, HttpRequestHeaders } from '@azure/functions';
 import * as joi from 'joi';
 import { Result, ResultType } from './result-lib';
@@ -18,7 +19,7 @@ export enum ParseOptions {
     UseRequestParams = 2
 }
 
-export type ApiFunction = ( context: Context, req: HttpRequest ) => Promise<Result<object>>
+export type ApiFunction = (context: Context, req: HttpRequest) => Promise<Result<object>>
 
 export class ApiPipeline {
     private _headers;
@@ -31,42 +32,41 @@ export class ApiPipeline {
         this._needToValidate = false;
     }
 
-    public requireHeaders( headers: HttpRequestHeaders ) {
+    public requireHeaders(headers: HttpRequestHeaders) {
         this._headers = headers;
         return this;
     }
 
-    public execute( fn: ApiFunction ) {
+    public execute(fn: ApiFunction) {
         this._execute = fn;
         return this;
     }
 
-    public validate( schema: joi.ObjectSchema, options: ParseOptions = ParseOptions.UseRequestBody ) {
+    public validate(schema: joi.ObjectSchema, options: ParseOptions = ParseOptions.UseRequestBody) {
 
-        if ( schema != null && options != ParseOptions.None ) {
+        if (schema != null && options != ParseOptions.None) {
             this._validationOptions = options;
             this._validationSchema = schema;
             this._needToValidate = true;
         }
-        
+
         return this;
     }
 
     public listen() {
         const self = this;
         return async (context: Context, req: HttpRequest) => {
-            return self._handleListen( context, req );
-            //context.done()
+            return self._handleListen(context, req);
         }
     }
 
-    private _handleValidate( context: Context, req: HttpRequest ): Result<any> {
-        if ( this._needToValidate ) {
+    private _handleValidate(context: Context, req: HttpRequest): Result<unknown> {
+        if (this._needToValidate) {
 
-            let inputs =  this._parseRequest(req, this._validationOptions );
+            const inputs = this._parseRequest(req, this._validationOptions);
 
-            let result = this._validationSchema.validate( inputs );
-            if ( result.error ) {
+            const result = this._validationSchema.validate(inputs);
+            if (result.error) {
                 return {
                     type: ResultType.Error,
                     code: ApiResponseCode.BadRequest,
@@ -79,10 +79,16 @@ export class ApiPipeline {
                     type: ResultType.Success,
                     code: ApiResponseCode.OK
                 }
-            }            
+            }
         }
     }
 
+    /**
+     * Determines which part of the request to pull inputs from.
+     * @param req Determines
+     * @param options A flag that indicates to pull inputs from the request body or the request parameters.
+     * @returns The inputs as an object.
+     */
     private _parseRequest(req: HttpRequest, options: ParseOptions) {
         let inputs;
 
@@ -100,19 +106,19 @@ export class ApiPipeline {
 
     private async _handleListen(context: Context, req: HttpRequest) {
 
-        let result: Result<any>;
+        let result: Result<unknown>;
 
         // Check HTTP Request Headers
-        if ( this._headers ) result = this.checkRequestHeaders(req);
+        if (this._headers) result = this.checkRequestHeaders(req);
 
         // All good? Validate incoming input values
-        if ( result.type == ResultType.Success && this._needToValidate ) result = this._handleValidate( context, req );
+        if (result.type == ResultType.Success && this._needToValidate) result = this._handleValidate(context, req);
 
         // All good? Execute the main function
-        if ( result.type == ResultType.Success ) result = await this._execute( context, req );
+        if (result.type == ResultType.Success) result = await this._execute(context, req);
 
         // Do we have an error?
-        if ( result.type == ResultType.Error ) {
+        if (result.type == ResultType.Error) {
 
             // Hide error details from external callers.
             delete result.details;
@@ -132,24 +138,27 @@ export class ApiPipeline {
             body: response
         }
         context.done();
-        
+
     }
 
-    private checkRequestHeaders( req: HttpRequest ) {
+    /**
+     * Checks the HTTP Request to see if it contains required headers.
+     * @param req The HTTP Request to check.
+     * @returns A Result indicating success or error.
+     */
+    private checkRequestHeaders(req: HttpRequest) {
         if (this._headers) {
-            console.log(req.headers);
-            console.log(`Number of headers: ${this._headers.length}`);
-            for (let prop in this._headers) {
-                const headerValue = req.headers[prop];
-                if (headerValue && headerValue.includes(this._headers[prop])) {
-                    console.log(`Required header "${prop}" with a value of "${this._headers[prop]}" is present.`);
-    
+            for (const headerName in this._headers) {
+                const headerValue = req.headers[headerName];
+                if (headerValue && headerValue.includes(this._headers[headerName])) {
+                    console.log(`Required header "${headerName}" with a value of "${this._headers[headerName]}" is present.`);
+
                 } else {
-                    console.error(`Required header "${prop}" with a value of "${this._headers[prop]}" is missing.`);
+                    console.error(`Required header "${headerName}" with a value of "${this._headers[headerName]}" is missing.`);
                     return {
                         type: ResultType.Error,
                         code: ApiResponseCode.BadRequest,
-                        message: `Required header "${prop}" with a value of "${this._headers[prop]}" is missing.`,
+                        message: `Required header "${headerName}" with a value of "${this._headers[headerName]}" is missing.`,
                         name: "HeaderError",
                         details: {}
                     }
@@ -160,17 +169,5 @@ export class ApiPipeline {
         return {
             type: ResultType.Success
         }
-    }
-
-    private _handleResponse( context: Context, result: Result<any> ) {
-        context.res = {
-            statusCode: result.code,
-            headers: {
-                "Content-Type": "application/json",
-                "server": ""
-            },
-            body: result
-        }
-        context.done();
     }
 }
