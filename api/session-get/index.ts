@@ -1,7 +1,7 @@
-import { Context, HttpRequest } from "@azure/functions"
-import { ApiFunction, ApiPipeline, Result, ParseOptions } from "../lib/api-pipeline";
-import * as schema from "../lib/schema-lib";
 import * as db from "../lib/db-lib";
+import * as schema from "../lib/schema-lib";
+import { ApiFunction, ApiPipeline, ParseOptions, Result } from "../lib/api-pipeline";
+import { Context, HttpRequest } from "@azure/functions"
 
 const trigger: ApiFunction = async function( context: Context, req: HttpRequest ): Promise<Result<schema.IDispatchSession>> {
     const result = await db.getSession( req.params.userId, req.params.id ) as Result<schema.IDispatchSession>

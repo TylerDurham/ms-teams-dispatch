@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
-import { Context, HttpRequest, HttpRequestHeaders } from '@azure/functions';
 import * as joi from 'joi';
+import { Context, HttpRequest, HttpRequestHeaders } from '@azure/functions';
 import { Result, ResultType } from './result-lib';
 
 export { ResultType, Result }

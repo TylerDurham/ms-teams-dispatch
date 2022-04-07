@@ -1,6 +1,6 @@
 import { AzureNamedKeyCredential, TableClient } from "@azure/data-tables";
-import { ApiResponseCode } from "./api-pipeline";
 import { Result, ResultType, ResultTypeError } from "./result-lib";
+import { ApiResponseCode } from "./api-pipeline";
 
 const account = process.env["AzStorageTableAccountName"];
 const accountKey = process.env["AzStorageTableAccountKey"];
