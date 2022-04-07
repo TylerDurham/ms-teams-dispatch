@@ -2,29 +2,29 @@ import { Context, HttpRequest } from '@azure/functions';
 import * as joi from 'joi';
 import { Result, ResultType } from './result-lib';
 
-export { ResultType }
+export { ResultType, Result }
 
 export enum ApiResponseCode {
     OK = 200,
     BadRequest = 400,
+    AccessDenied = 401,
+    NotFound = 404,
     InternalServerError = 500
 }
 
-export type ApiResult<T> = Result<T> & { code: ApiResponseCode }
-
-export enum ValidationOptions {
+export enum ParseOptions {
     None = 0,
     UseRequestBody = 1,
     UseRequestParams = 2
 }
 
-export type ApiFunction = ( context: Context, req: HttpRequest ) => Promise<ApiResult<object>>
+export type ApiFunction = ( context: Context, req: HttpRequest ) => Promise<Result<object>>
 
 export class ApiPipeline {
 
     private _needToValidate = false;
     private _validationSchema: joi.ObjectSchema = null;
-    private _validationOptions: ValidationOptions = ValidationOptions.None;
+    private _validationOptions: ParseOptions = ParseOptions.None;
     private _execute: ApiFunction;
 
     constructor() {
@@ -36,9 +36,9 @@ export class ApiPipeline {
         return this;
     }
 
-    public validate( schema: joi.ObjectSchema, options: ValidationOptions = ValidationOptions.UseRequestBody ) {
+    public validate( schema: joi.ObjectSchema, options: ParseOptions = ParseOptions.UseRequestBody ) {
 
-        if ( schema != null && options != ValidationOptions.None ) {
+        if ( schema != null && options != ParseOptions.None ) {
             this._validationOptions = options;
             this._validationSchema = schema;
             this._needToValidate = true;
@@ -55,11 +55,7 @@ export class ApiPipeline {
         }
     }
 
-    private _handleExecute( context: Context, req: HttpRequest ) {
-
-    }
-
-    private _handleValidate( context: Context, req: HttpRequest ): ApiResult<any> {
+    private _handleValidate( context: Context, req: HttpRequest ): Result<any> {
         if ( this._needToValidate ) {
 
             let inputs =  this._parseRequest(req, this._validationOptions );
@@ -82,15 +78,15 @@ export class ApiPipeline {
         }
     }
 
-    private _parseRequest(req: HttpRequest, options: ValidationOptions) {
+    private _parseRequest(req: HttpRequest, options: ParseOptions) {
         let inputs;
 
         switch (options) {
-            case ValidationOptions.UseRequestBody:
+            case ParseOptions.UseRequestBody:
                 inputs = req.body;
                 break;
 
-            case ValidationOptions.UseRequestParams:
+            case ParseOptions.UseRequestParams:
                 inputs = req.params;
                 break;
         }
@@ -99,17 +95,28 @@ export class ApiPipeline {
 
     private async _handleListen(context: Context, req: HttpRequest) {
 
-        let result;
+        console.log(req.headers)
+
+        let result: Result<any>;
         if ( this._needToValidate ) result = this._handleValidate( context, req );
         if ( result.type == ResultType.Success ) result = await this._execute( context, req );
 
+        if ( result.type == ResultType.Error ) {
+
+            // Hide error details from external callers.
+            delete result.details;
+            delete result.name;
+        }
+
+        // Extract response code
         const { code, ...response } = result;
 
+        // Fortmat response
         context.res = {
             statusCode: code,
             headers: {
                 "Content-Type": "application/json",
-                "server": ""
+                "server": ""                            // Keep the hackers guessing.
             },
             body: response
         }
@@ -117,7 +124,7 @@ export class ApiPipeline {
         
     }
 
-    private _handleResponse( context: Context, result: ApiResult<any> ) {
+    private _handleResponse( context: Context, result: Result<any> ) {
         context.res = {
             statusCode: result.code,
             headers: {
