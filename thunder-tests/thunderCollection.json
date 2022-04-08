@@ -1,0 +1,34 @@
+[
+  {
+    "_id": "1c7abf22-c8b2-42e5-a70d-9dc1168b0a44",
+    "colName": "session lifecycle",
+    "created": "2022-04-07T03:00:50.828Z",
+    "sortNum": 10000,
+    "folders": [],
+    "settings": {
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "tests": []
+    }
+  },
+  {
+    "_id": "0994be50-684a-4bfb-b5a4-969874438d7c",
+    "colName": "session-start",
+    "created": "2022-04-07T21:49:38.679Z",
+    "sortNum": 20000,
+    "folders": [],
+    "settings": {
+      "headers": [],
+      "tests": [],
+      "envId": "3f73cbab-c1d9-4656-a59a-68657371e15e"
+    }
+  }
+]
