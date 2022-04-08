@@ -19,7 +19,7 @@ export enum ParseOptions {
     UseRequestParams = 2
 }
 
-export type ApiFunction = (context: Context, req: HttpRequest) => Promise<Result<object>>
+export type ApiFunction = ( context: Context, req: HttpRequest ) => Promise<Result<object>>
 
 export class ApiPipeline {
     private _headers;
@@ -32,19 +32,19 @@ export class ApiPipeline {
         this._needToValidate = false;
     }
 
-    public requireHeaders(headers: HttpRequestHeaders) {
+    public requireHeaders( headers: HttpRequestHeaders ) {
         this._headers = headers;
         return this;
     }
 
-    public execute(fn: ApiFunction) {
+    public execute( fn: ApiFunction ) {
         this._execute = fn;
         return this;
     }
 
-    public validate(schema: joi.ObjectSchema, options: ParseOptions = ParseOptions.UseRequestBody) {
+    public validate( schema: joi.ObjectSchema, options: ParseOptions = ParseOptions.UseRequestBody ) {
 
-        if (schema != null && options != ParseOptions.None) {
+        if ( schema != null && options != ParseOptions.None ) {
             this._validationOptions = options;
             this._validationSchema = schema;
             this._needToValidate = true;
@@ -55,18 +55,18 @@ export class ApiPipeline {
 
     public listen() {
         const self = this;
-        return async (context: Context, req: HttpRequest) => {
-            return self._handleListen(context, req);
+        return async ( context: Context, req: HttpRequest ) => {
+            return self._handleListen( context, req );
         }
     }
 
-    private _handleValidate(context: Context, req: HttpRequest): Result<unknown> {
-        if (this._needToValidate) {
+    private _handleValidate( context: Context, req: HttpRequest ): Result<unknown> {
+        if ( this._needToValidate ) {
 
-            const inputs = this._parseRequest(req, this._validationOptions);
+            const inputs = this._parseRequest( req, this._validationOptions );
 
-            const result = this._validationSchema.validate(inputs);
-            if (result.error) {
+            const result = this._validationSchema.validate( inputs );
+            if ( result.error ) {
                 return {
                     type: ResultType.Error,
                     code: ApiResponseCode.BadRequest,
@@ -89,10 +89,10 @@ export class ApiPipeline {
      * @param options A flag that indicates to pull inputs from the request body or the request parameters.
      * @returns The inputs as an object.
      */
-    private _parseRequest(req: HttpRequest, options: ParseOptions) {
+    private _parseRequest( req: HttpRequest, options: ParseOptions ) {
         let inputs;
 
-        switch (options) {
+        switch ( options ) {
             case ParseOptions.UseRequestBody:
                 inputs = req.body;
                 break;
@@ -104,21 +104,21 @@ export class ApiPipeline {
         return inputs;
     }
 
-    private async _handleListen(context: Context, req: HttpRequest) {
+    private async _handleListen( context: Context, req: HttpRequest ) {
 
         let result: Result<unknown>;
 
         // Check HTTP Request Headers
-        if (this._headers) result = this.checkRequestHeaders(req);
+        if ( this._headers ) result = this.checkRequestHeaders( req );
 
         // All good? Validate incoming input values
-        if (result.type == ResultType.Success && this._needToValidate) result = this._handleValidate(context, req);
+        if ( result.type == ResultType.Success && this._needToValidate ) result = this._handleValidate( context, req );
 
         // All good? Execute the main function
-        if (result.type == ResultType.Success) result = await this._execute(context, req);
+        if ( result.type == ResultType.Success ) result = await this._execute( context, req );
 
         // Do we have an error?
-        if (result.type == ResultType.Error) {
+        if ( result.type == ResultType.Error ) {
 
             // Hide error details from external callers.
             delete result.details;
@@ -146,15 +146,15 @@ export class ApiPipeline {
      * @param req The HTTP Request to check.
      * @returns A Result indicating success or error.
      */
-    private checkRequestHeaders(req: HttpRequest) {
-        if (this._headers) {
-            for (const headerName in this._headers) {
+    private checkRequestHeaders( req: HttpRequest ) {
+        if ( this._headers ) {
+            for ( const headerName in this._headers ) {
                 const headerValue = req.headers[headerName];
-                if (headerValue && headerValue.includes(this._headers[headerName])) {
-                    console.log(`Required header "${headerName}" with a value of "${this._headers[headerName]}" is present.`);
+                if ( headerValue && headerValue.includes( this._headers[headerName] ) ) {
+                    console.log( `Required header "${headerName}" with a value of "${this._headers[headerName]}" is present.` );
 
                 } else {
-                    console.error(`Required header "${headerName}" with a value of "${this._headers[headerName]}" is missing.`);
+                    console.error( `Required header "${headerName}" with a value of "${this._headers[headerName]}" is missing.` );
                     return {
                         type: ResultType.Error,
                         code: ApiResponseCode.BadRequest,

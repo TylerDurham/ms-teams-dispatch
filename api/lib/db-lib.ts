@@ -19,19 +19,19 @@ type DbError = {
 const getTableClient = function(): Result<TableClient> {
 
     if ( account == undefined || accountKey == undefined|| tableName == undefined ) {
-        console.warn(`WARNING: Azure Storage has not been configured.`);
+        console.warn( `WARNING: Azure Storage has not been configured.` );
         return {
             type: ResultType.Error, message: "Data storage has not been configured.", name: "ConfigurationError"
         }
     }
 
     try {
-        const credential = new AzureNamedKeyCredential(account, accountKey);
+        const credential = new AzureNamedKeyCredential( account, accountKey );
         return {
             type: ResultType.Success,
-            value: new TableClient(`https://${account}.table.core.windows.net`, tableName, credential)
+            value: new TableClient( `https://${account}.table.core.windows.net`, tableName, credential )
         }
-    } catch (error) {
+    } catch ( error ) {
         const err = error as Error;
 
         return {
@@ -50,7 +50,7 @@ type DbDispatchSession = {
 export const createSession = async ( session: DbDispatchSession ): Promise<Result<DbDispatchSession>> => {
 
     const client = getTableClient();
-    if (client.type == ResultType.Error) { return client as ResultTypeError; }
+    if ( client.type == ResultType.Error ) { return client as ResultTypeError; }
     session.id = getInvertedTicks();
     session.version = pkg.version;
     session.status = DispatchSessionStatus.Waiting;
@@ -72,7 +72,7 @@ export const createSession = async ( session: DbDispatchSession ): Promise<Resul
 
 export const getSession = async function( partitionKey: string, rowKey: string ) : Promise<Result<DbDispatchSession>>  {
     const client = getTableClient();
-    if (client.type == ResultType.Error) { return client; }
+    if ( client.type == ResultType.Error ) { return client; }
 
     try {
         const result = await client.value.getEntity( partitionKey, rowKey );
@@ -97,7 +97,7 @@ export const getSession = async function( partitionKey: string, rowKey: string )
 const handleDbError = ( err: DbError, partitionKey: string, rowKey: string ): ResultTypeError => {
     console.error()
     let message = err.message;
-    if ( err.name && err.name.toUpperCase() == "RESTERROR") {        
+    if ( err.name && err.name.toUpperCase() == "RESTERROR" ) {        
 
         if ( err.code != undefined ) {
             switch( err.code.toUpperCase() ) {
@@ -111,9 +111,9 @@ const handleDbError = ( err: DbError, partitionKey: string, rowKey: string ): Re
                     break;
             }
         } else if ( err.statusCode != undefined ) {
-            switch(err.statusCode) {
+            switch( err.statusCode ) {
                 case ApiResponseCode.NotFound:
-                    message = ( err.message.includes("TableNotFound") ) 
+                    message = ( err.message.includes( "TableNotFound" ) ) 
                         ? `The configured storage table could not be found.` 
                         : `Dispatch session with keys "${partitionKey} - ${rowKey}" not found.`;
                     break;

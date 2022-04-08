@@ -5,10 +5,10 @@ import { ApiResponseCode, ResultType } from "./api-pipeline";
  * @param type The ResultType to be converted.
  * @returns The corresponding ApiResponseCode.
  */
-export function convertToApiResponseCode(type: ResultType): ApiResponseCode {
+export function convertToApiResponseCode( type: ResultType ): ApiResponseCode {
   let code: ApiResponseCode;
 
-  switch (type) {
+  switch ( type ) {
     case ResultType.Success:
       code = ApiResponseCode.OK;
       break;
