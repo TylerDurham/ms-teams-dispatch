@@ -4,9 +4,9 @@ import { Result, ResultType, ResultTypeError } from "./result-lib";
 import { ApiResponseCode } from "./api-pipeline";
 import { DispatchSessionStatus } from './schema-lib';
 
-const account = process.env["AzStorageTableAccountName"];
-const accountKey = process.env["AzStorageTableAccountKey"];
-const tableName = process.env["AzStorageTableName"];
+const account = process.env[ "AzStorageTableAccountName" ];
+const accountKey = process.env[ "AzStorageTableAccountKey" ];
+const tableName = process.env[ "AzStorageTableName" ];
 
 type DbError = {
     message: string,

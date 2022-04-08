@@ -16,10 +16,12 @@
     }
   ],
   "rules": {
+    "brace-style": [ "warn", "1tbs", { "allowSingleLine": true } ],
     "space-in-parens": [ "warn", "always" ],
     "array-bracket-spacing": [ "warn", "always" ],
-    "object-curly-spacing":  "off",
-    "@typescript-eslint/object-curly-spacing": ["warn", "always"],
+    "computed-property-spacing": [ "warn", "always" ],
+    "object-curly-spacing":  [ "warn", "always" ],
+    //"@typescript-eslint/object-curly-spacing": ["warn", "always" ],
     "sort-imports": [
       "warn",
       {

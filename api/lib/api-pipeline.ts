@@ -149,16 +149,16 @@ export class ApiPipeline {
     private checkRequestHeaders( req: HttpRequest ) {
         if ( this._headers ) {
             for ( const headerName in this._headers ) {
-                const headerValue = req.headers[headerName];
-                if ( headerValue && headerValue.includes( this._headers[headerName] ) ) {
-                    console.log( `Required header "${headerName}" with a value of "${this._headers[headerName]}" is present.` );
+                const headerValue = req.headers[ headerName ];
+                if ( headerValue && headerValue.includes( this._headers[ headerName ] ) ) {
+                    console.log( `Required header "${headerName}" with a value of "${this._headers[ headerName ]}" is present.` );
 
                 } else {
-                    console.error( `Required header "${headerName}" with a value of "${this._headers[headerName]}" is missing.` );
+                    console.error( `Required header "${headerName}" with a value of "${this._headers[ headerName ]}" is missing.` );
                     return {
                         type: ResultType.Error,
                         code: ApiResponseCode.BadRequest,
-                        message: `Required header "${headerName}" with a value of "${this._headers[headerName]}" is missing.`,
+                        message: `Required header "${headerName}" with a value of "${this._headers[ headerName ]}" is missing.`,
                         name: "HeaderError",
                         details: {}
                     }

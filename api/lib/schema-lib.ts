@@ -1,8 +1,8 @@
 import joi = require( "joi" );
 
 // Load valid commands from settings. This will be used to validate the "command" property of session instances.
-console.log( process.env["ValidCommands"] )
-const VALID_COMMANDS = ( process.env["ValidCommands"] ) ? process.env["ValidCommands"].split( "," ) : [];
+console.log( process.env[ "ValidCommands" ] )
+const VALID_COMMANDS = ( process.env[ "ValidCommands" ] ) ? process.env[ "ValidCommands" ].split( "," ) : [];
 if( VALID_COMMANDS.length == 0 ) console.warn( "WARNING: No ValidCommands configured." );
 
 /**
