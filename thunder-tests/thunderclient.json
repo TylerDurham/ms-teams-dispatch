@@ -4,12 +4,17 @@
     "colId": "1c7abf22-c8b2-42e5-a70d-9dc1168b0a44",
     "containerId": "",
     "name": "session-get",
-    "url": "http://localhost:7071/api/session/{{userId}}/8638351932992526",
+    "url": "http://localhost:7071/api/session/{{tmpUserId}}/{{tmpId}}",
     "method": "GET",
     "sortNum": 10000,
     "created": "2022-04-07T00:25:24.171Z",
-    "modified": "2022-04-07T19:42:01.115Z",
-    "headers": [],
+    "modified": "2022-04-09T01:45:37.769Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
     "params": [],
     "tests": [
       {
@@ -53,8 +58,13 @@
     "method": "POST",
     "sortNum": 5000,
     "created": "2022-04-07T19:12:30.870Z",
-    "modified": "2022-04-07T22:10:52.864Z",
-    "headers": [],
+    "modified": "2022-04-09T01:44:15.457Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
     "params": [],
     "body": {
       "type": "json",
@@ -97,6 +107,18 @@
         "custom": "json.value.status",
         "action": "equal",
         "value": "1"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.value.id",
+        "action": "setto",
+        "value": "{{tmpId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.value.userId",
+        "action": "setto",
+        "value": "{{tmpUserId}}"
       }
     ]
   },
@@ -468,6 +490,44 @@
         "custom": "json.message",
         "action": "equal",
         "value": "\"callback\" must be a valid uri"
+      }
+    ]
+  },
+  {
+    "_id": "4ce4860c-65f2-44ff-bc5e-bd68eba59f1c",
+    "colId": "1c7abf22-c8b2-42e5-a70d-9dc1168b0a44",
+    "containerId": "",
+    "name": "session-delete",
+    "url": "http://localhost:7071/api/session/{{tmpUserId}}/{{tmpId}}",
+    "method": "DELETE",
+    "sortNum": 20000,
+    "created": "2022-04-09T01:46:56.996Z",
+    "modified": "2022-04-09T01:47:24.954Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "contains",
+        "value": "application/json"
+      },
+      {
+        "type": "custom-header",
+        "custom": "server",
+        "action": "equal",
+        "value": ""
       }
     ]
   }

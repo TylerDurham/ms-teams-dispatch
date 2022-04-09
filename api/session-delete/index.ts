@@ -1,17 +1,20 @@
-import { AzureFunction, Context, HttpRequest } from "@azure/functions"
+import * as db from "../lib/db-lib";
+import * as schema from "../lib/schema-lib";
+import { ApiFunction, ApiPipeline, ParseOptions, Result } from "../lib/api-pipeline";
+import { Context, HttpRequest } from "@azure/functions"
 
-const httpTrigger: AzureFunction = async function ( context: Context, req: HttpRequest ): Promise<void> {
-    context.log( 'HTTP trigger function processed a request.' );
-    const name = ( req.query.name || ( req.body && req.body.name ) );
-    const responseMessage = name
-        ? "Hello, " + name + ". This HTTP triggered function executed successfully."
-        : "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
+const trigger: ApiFunction = async function (context: Context, req: HttpRequest): Promise<Result<any>> {
+    const result = await db.deleteSession(req.params.userId, req.params.id) 
 
-    context.res = {
-        // status: 200, /* Defaults to 200 */
-        body: responseMessage
-    };
+    return result;
+}
 
-};
+const pipeline = new ApiPipeline()
+    .requireHeaders({ "accept": "application/json" })
+    .validate(schema.PrimaryKey, ParseOptions.UseRequestParams)
+    .execute(trigger)
+    .listen();
 
-export default httpTrigger;
+export default pipeline;
+
+

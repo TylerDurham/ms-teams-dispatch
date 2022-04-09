@@ -12,6 +12,8 @@ const axios = require('axios').default.create({
 
 describe(`Testing Azure Function "${functionName}".`, () => {
 
+    let created;
+
     const sampleData = function () {
         return {
             userId: "user@domain.com",
@@ -25,7 +27,7 @@ describe(`Testing Azure Function "${functionName}".`, () => {
         axios.post("/api/session", inputs)
             .then((response) => {
                 const headers = response.headers;
-                const data = response.data;     //console.log(data);
+                created = response.data;     //console.log(data);
 
                 // Check HTTP stuff
                 expect(response.status).to.equal(200)
@@ -33,13 +35,14 @@ describe(`Testing Azure Function "${functionName}".`, () => {
                 expect(headers["server"]).to.be.empty;
 
                 // Check data returned
-                expect(data.type).to.equal(0, "response.data.type");
+                expect(created.type).to.equal(0, "response.data.type");
                 for (const prop in inputs) {
-                    expect(data.value[prop]).to.equal(inputs[prop], `data.value.${prop}`);
+                    // Loop through sample data inputs and compare values.
+                    expect(created.value[prop]).to.equal(inputs[prop], `data.value.${prop}`);
                 }
-                expect(data.value.version).to.equal(pkg.version, "data.value.version");
-                expect(data.value.status).to.equal(1, "data.value.status");
-                expect(data.value.id).to.be.a.string;
+                expect(created.value.version).to.equal(pkg.version, "data.value.version");
+                expect(created.value.status).to.equal(1, "data.value.status");
+                expect(created.value.id).to.be.a.string;
 
                 done();
             })
@@ -48,11 +51,30 @@ describe(`Testing Azure Function "${functionName}".`, () => {
                 done(err)
             })
     });
-    it("bad header: accept", () => {
+    it("bad header: accept", (done) => {
         axios.post("/api/session", sampleData(), {
-            validateStatus: function (status) {
-                return status < 501
+            headers: {
+                "accept": "application/xml"
             }
+        })
+        .then((response) => {
+            try {
+                throw "Should not be here"
+            } catch ( err) {
+                done(err)
+            }
+        })
+        .catch((err) => {
+            const response = err.response;
+            const headers = response.headers;
+
+            //console.log(response)
+            // Check HTTP stuff
+            expect(response.status).to.equal(400)
+            expect(headers["content-type"]).to.include("application/json", "response.headers['content-type']")
+            //expect(headers["server"]).to.be.empty;
+
+            done()
         })
     });
 });

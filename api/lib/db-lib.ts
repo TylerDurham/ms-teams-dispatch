@@ -70,6 +70,22 @@ export const createSession = async ( session: DbDispatchSession ): Promise<Resul
     }
 }
 
+export const deleteSession = async function (partitionKey: string, rowKey: string): Promise<Result<DbDispatchSession>> {
+    const client = getTableClient();
+    if (client.type == ResultType.Error) { return client; }
+
+    try {
+        const result = await client.value.deleteEntity(partitionKey, rowKey);
+
+        return {
+            type: ResultType.Success,
+            value: null
+        }
+    } catch (err) {
+        return handleDbError(err, partitionKey, rowKey)
+    }
+}
+
 export const getSession = async function( partitionKey: string, rowKey: string ) : Promise<Result<DbDispatchSession>>  {
     const client = getTableClient();
     if ( client.type == ResultType.Error ) { return client; }

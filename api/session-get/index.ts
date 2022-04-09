@@ -10,7 +10,7 @@ const trigger: ApiFunction = async function( context: Context, req: HttpRequest 
 }
 
 const pipeline = new ApiPipeline()
-    .requireHeaders( { "accept": "application/json" } )
+    .requireHeaders( { "accept": "application/json", "content-type": "application/json" } )
     .validate( schema.PrimaryKey, ParseOptions.UseRequestParams )
     .execute( trigger )
     .listen();

@@ -6,9 +6,9 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "get",
-        "post"
-      ]
+        "delete"
+      ],
+      "route": "session/{userId}/{id}"
     },
     {
       "type": "http",

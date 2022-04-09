@@ -20,10 +20,18 @@
     "default": true,
     "sortNum": 10000,
     "created": "2022-04-07T21:50:46.575Z",
-    "modified": "2022-04-07T21:51:17.723Z",
+    "modified": "2022-04-09T01:48:38.554Z",
     "data": [
       {
         "name": "userId",
+        "value": "test@session-start.com"
+      },
+      {
+        "name": "tmpId",
+        "value": "8638350531081517"
+      },
+      {
+        "name": "tmpUserId",
         "value": "test@session-start.com"
       }
     ]
