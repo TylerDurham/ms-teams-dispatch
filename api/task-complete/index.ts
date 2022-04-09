@@ -3,6 +3,7 @@ import * as schema from "../lib/schema-lib";
 import { ApiFunction, ApiPipeline, ApiResponseCode, ParseOptions, Result, ResultType } from "../lib/api-pipeline";
 import { Context, HttpRequest } from "@azure/functions"
 import * as axios from 'axios';
+import { object } from "joi";
 
 const handleCallback = async function (url: string, payload: object | undefined): Promise<Result<object>> {
     try {
@@ -26,7 +27,7 @@ const handleCallback = async function (url: string, payload: object | undefined)
 }
 
 const trigger: ApiFunction = async function (context: Context, req: HttpRequest): Promise<Result<db.DbDispatchTask>> {
-
+    const payload = req.body;
     let result = await db.getTask(req.params.userId, req.params.id)
 
     if (result.type == ResultType.Error) return result;
@@ -44,6 +45,7 @@ const trigger: ApiFunction = async function (context: Context, req: HttpRequest)
             userId: req.params.userId,
             id: req.params.id,
             status: schema.DispatchTaskStatus.Error,
+            callbackpayload: (payload != null && typeof payload == "object") ? JSON.stringify(payload) : null,
             errormessage: result.error.message,
             errordetails: JSON.stringify(result.error.details)
         }
@@ -65,7 +67,9 @@ const trigger: ApiFunction = async function (context: Context, req: HttpRequest)
             userId: req.params.userId,
             id: req.params.id,
             status: schema.DispatchTaskStatus.Completed,
+            callbackpayload: (payload != null && typeof payload == "object") ? JSON.stringify(payload) : null,
         }
+        result = await db.patchTask(record) as Result<db.DbDispatchTask>
     }
 
     return result;

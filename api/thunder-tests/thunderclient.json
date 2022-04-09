@@ -58,7 +58,7 @@
     "method": "POST",
     "sortNum": 5000,
     "created": "2022-04-07T19:12:30.870Z",
-    "modified": "2022-04-09T06:08:01.024Z",
+    "modified": "2022-04-09T06:29:41.443Z",
     "headers": [
       {
         "name": "Accept",
@@ -68,7 +68,7 @@
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"command\": \"com-microsoft-teams:dispatch-task:echo-teams-env\",\n    \"callback\": \"http://localhost:7071/api/nnnecho\"\n}",
+      "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"command\": \"com-microsoft-teams:dispatch-task:echo-teams-env\",\n    \"callback\": \"http://localhost:7071/api/echo\"\n}",
       "form": []
     },
     "tests": [
@@ -603,6 +603,56 @@
       "raw": "{\n    \"message\": \"Command completed!\"\n}",
       "form": []
     },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "contains",
+        "value": "application/json"
+      },
+      {
+        "type": "custom-header",
+        "custom": "server",
+        "action": "equal",
+        "value": ""
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value",
+        "action": "istype",
+        "value": "object"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value.status",
+        "action": "istype",
+        "value": "number"
+      }
+    ]
+  },
+  {
+    "_id": "48d47b28-9e3f-46fc-821d-6861c605f875",
+    "colId": "1c7abf22-c8b2-42e5-a70d-9dc1168b0a44",
+    "containerId": "",
+    "name": "task-get completed",
+    "url": "http://localhost:7071/api/task/{{tmpUserId}}/{{tmpId}}",
+    "method": "GET",
+    "sortNum": 18750,
+    "created": "2022-04-09T06:30:15.891Z",
+    "modified": "2022-04-09T06:30:23.428Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
     "tests": [
       {
         "type": "res-code",
