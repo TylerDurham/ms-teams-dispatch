@@ -3,12 +3,12 @@
     "_id": "74f7aae6-05b7-4824-b074-f15dc7c04e7f",
     "colId": "1c7abf22-c8b2-42e5-a70d-9dc1168b0a44",
     "containerId": "",
-    "name": "session-get",
-    "url": "http://localhost:7071/api/session/{{tmpUserId}}/{{tmpId}}",
+    "name": "task-get",
+    "url": "http://localhost:7071/api/task/{{tmpUserId}}/{{tmpId}}",
     "method": "GET",
     "sortNum": 10000,
     "created": "2022-04-07T00:25:24.171Z",
-    "modified": "2022-04-09T01:45:37.769Z",
+    "modified": "2022-04-09T02:03:28.276Z",
     "headers": [
       {
         "name": "Accept",
@@ -53,12 +53,12 @@
     "_id": "43a96966-e172-40a3-92d2-2f316d2c2537",
     "colId": "1c7abf22-c8b2-42e5-a70d-9dc1168b0a44",
     "containerId": "",
-    "name": "session-start",
-    "url": "http://localhost:7071/api/session",
+    "name": "task-start",
+    "url": "http://localhost:7071/api/task",
     "method": "POST",
     "sortNum": 5000,
     "created": "2022-04-07T19:12:30.870Z",
-    "modified": "2022-04-09T01:44:15.457Z",
+    "modified": "2022-04-09T02:12:03.703Z",
     "headers": [
       {
         "name": "Accept",
@@ -68,7 +68,7 @@
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"command\": \"com-microsoft-teams:dispatch:echo-teams-env\",\n    \"callback\": \"http://localhost:7071/echo\"\n}",
+      "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"command\": \"com-microsoft-teams:dispatch-task:echo-teams-env\",\n    \"callback\": \"http://localhost:7071/echo\"\n}",
       "form": []
     },
     "tests": [
@@ -497,12 +497,12 @@
     "_id": "4ce4860c-65f2-44ff-bc5e-bd68eba59f1c",
     "colId": "1c7abf22-c8b2-42e5-a70d-9dc1168b0a44",
     "containerId": "",
-    "name": "session-delete",
-    "url": "http://localhost:7071/api/session/{{tmpUserId}}/{{tmpId}}",
+    "name": "task-delete",
+    "url": "http://localhost:7071/api/task/{{tmpUserId}}/{{tmpId}}",
     "method": "DELETE",
     "sortNum": 20000,
     "created": "2022-04-09T01:46:56.996Z",
-    "modified": "2022-04-09T01:47:24.954Z",
+    "modified": "2022-04-09T02:03:45.785Z",
     "headers": [
       {
         "name": "Accept",

@@ -4,7 +4,7 @@ import { ApiFunction, ApiPipeline, ParseOptions, Result } from "../lib/api-pipel
 import { Context, HttpRequest } from "@azure/functions"
 
 const trigger: ApiFunction = async function (context: Context, req: HttpRequest): Promise<Result<any>> {
-    const result = await db.deleteSession(req.params.userId, req.params.id) 
+    const result = await db.deleteTask(req.params.userId, req.params.id) 
 
     return result;
 }

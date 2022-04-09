@@ -2,7 +2,7 @@ import * as pkg from '../package.json';
 import { AzureNamedKeyCredential, TableClient } from "@azure/data-tables";
 import { Result, ResultType, ResultTypeError } from "./result-lib";
 import { ApiResponseCode } from "./api-pipeline";
-import { DispatchSessionStatus } from './schema-lib';
+import { DispatchTaskStatus } from './schema-lib';
 
 const account = process.env[ "AzStorageTableAccountName" ];
 const accountKey = process.env[ "AzStorageTableAccountKey" ];
@@ -42,20 +42,20 @@ const getTableClient = function(): Result<TableClient> {
     }
 }
 
-type DbDispatchSession = {
+type DbDispatchTask = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [ key: string ]: any;
 }
 
-export const createSession = async ( session: DbDispatchSession ): Promise<Result<DbDispatchSession>> => {
+export const createTask = async ( task: DbDispatchTask ): Promise<Result<DbDispatchTask>> => {
 
     const client = getTableClient();
     if ( client.type == ResultType.Error ) { return client as ResultTypeError; }
-    session.id = getInvertedTicks();
-    session.version = pkg.version;
-    session.status = DispatchSessionStatus.Waiting;
+    task.id = getInvertedTicks();
+    task.version = pkg.version;
+    task.status = DispatchTaskStatus.Waiting;
 
-    const { userId, id, ...record } = session;
+    const { userId, id, ...record } = task;
     record.partitionKey = userId;
     record.rowKey = id;
 
@@ -63,14 +63,14 @@ export const createSession = async ( session: DbDispatchSession ): Promise<Resul
         await client.value.createEntity( record );
         return {
             type: ResultType.Success,
-            value: session
+            value: task
         }
     } catch ( error ) {
-        return handleDbError( error as DbError, session.partitionKey, session.rowKey );
+        return handleDbError( error as DbError, task.partitionKey, task.rowKey );
     }
 }
 
-export const deleteSession = async function (partitionKey: string, rowKey: string): Promise<Result<DbDispatchSession>> {
+export const deleteTask = async function (partitionKey: string, rowKey: string): Promise<Result<DbDispatchTask>> {
     const client = getTableClient();
     if (client.type == ResultType.Error) { return client; }
 
@@ -86,7 +86,7 @@ export const deleteSession = async function (partitionKey: string, rowKey: strin
     }
 }
 
-export const getSession = async function( partitionKey: string, rowKey: string ) : Promise<Result<DbDispatchSession>>  {
+export const getTask = async function( partitionKey: string, rowKey: string ) : Promise<Result<DbDispatchTask>>  {
     const client = getTableClient();
     if ( client.type == ResultType.Error ) { return client; }
 

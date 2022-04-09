@@ -156,5 +156,128 @@
     "headers": [],
     "params": [],
     "tests": []
+  },
+  {
+    "_id": "e65dff09-a4d5-4b78-a82a-0ea1ef5f4239",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:7071/api/task/{{tmpUserId}}/{{tmpId}}",
+    "url": "http://localhost:7071/api/task/{{tmpUserId}}/{{tmpId}}",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2022-04-09T02:06:38.637Z",
+    "modified": "2022-04-09T02:06:38.658Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "contains",
+        "value": "application/json"
+      },
+      {
+        "type": "custom-header",
+        "custom": "server",
+        "action": "equal",
+        "value": ""
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value",
+        "action": "istype",
+        "value": "object"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value.status",
+        "action": "istype",
+        "value": "number"
+      }
+    ]
+  },
+  {
+    "_id": "9124f016-d361-4f8f-9a49-e68ef66031eb",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:7071/api/task",
+    "url": "http://localhost:7071/api/task",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2022-04-09T02:06:47.775Z",
+    "modified": "2022-04-09T02:12:03.705Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"command\": \"com-microsoft-teams:dispatch-task:echo-teams-env\",\n    \"callback\": \"http://localhost:7071/echo\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "custom-header",
+        "custom": "server",
+        "action": "equal",
+        "value": ""
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "contains",
+        "value": "application/json"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.type",
+        "action": "equal",
+        "value": "0"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value.id",
+        "action": "istype",
+        "value": "string"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value.status",
+        "action": "equal",
+        "value": "1"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.value.id",
+        "action": "setto",
+        "value": "{{tmpId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.value.userId",
+        "action": "setto",
+        "value": "{{tmpUserId}}"
+      }
+    ]
   }
 ]

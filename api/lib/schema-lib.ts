@@ -8,17 +8,17 @@ if( VALID_COMMANDS.length == 0 ) console.warn( "WARNING: No ValidCommands config
 /**
  * Set of values that indicate the status of a dispatch session.
  */
- export enum DispatchSessionStatus {
+ export enum DispatchTaskStatus {
     Waiting = 1,
     Completed = 2,
     Error = 8
 }
 
-export interface IDispatchSession {
+export interface IDispatchTask {
     userId: string;
     id: string;
     command: string;
-    status: DispatchSessionStatus;
+    status: DispatchTaskStatus;
     callback?: string;
     version?: string;
 }

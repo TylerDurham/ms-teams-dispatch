@@ -6,9 +6,9 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "delete"
+        "post"
       ],
-      "route": "session/{userId}/{id}"
+      "route": "task"
     },
     {
       "type": "http",
@@ -16,5 +16,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/session-delete/index.js"
+  "scriptFile": "../dist/task-start/index.js"
 }

@@ -8,13 +8,13 @@
       "methods": [
         "get"
       ],
-      "route": "session/{userId}/{id}"
+      "route": "task/{userId}/{id}"
     },
     {
-      "type": "http",
+      "type": "http", 
       "direction": "out",
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/session-get/index.js"
+  "scriptFile": "../dist/task-get/index.js"
 }
