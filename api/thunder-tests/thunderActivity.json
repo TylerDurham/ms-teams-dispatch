@@ -166,7 +166,7 @@
     "method": "GET",
     "sortNum": 0,
     "created": "2022-04-09T02:06:38.637Z",
-    "modified": "2022-04-09T02:06:38.658Z",
+    "modified": "2022-04-09T04:54:35.405Z",
     "headers": [
       {
         "name": "Accept",
@@ -216,7 +216,7 @@
     "method": "POST",
     "sortNum": 0,
     "created": "2022-04-09T02:06:47.775Z",
-    "modified": "2022-04-09T02:12:03.705Z",
+    "modified": "2022-04-09T04:53:32.010Z",
     "headers": [
       {
         "name": "Accept",
@@ -327,6 +327,99 @@
         "custom": "json.value[0].status",
         "action": "istype",
         "value": "number"
+      }
+    ]
+  },
+  {
+    "_id": "cd8aa825-e5a9-45ae-be30-07964874a855",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:7071/api/task/{{tmpUserId}}/{{tmpId}}/complete",
+    "url": "http://localhost:7071/api/task/{{tmpUserId}}/{{tmpId}}/complete",
+    "method": "PATCH",
+    "sortNum": 0,
+    "created": "2022-04-09T03:38:04.369Z",
+    "modified": "2022-04-09T05:28:12.749Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"message\": \"Command completed!\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "contains",
+        "value": "application/json"
+      },
+      {
+        "type": "custom-header",
+        "custom": "server",
+        "action": "equal",
+        "value": ""
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value",
+        "action": "istype",
+        "value": "object"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value.status",
+        "action": "istype",
+        "value": "number"
+      }
+    ]
+  },
+  {
+    "_id": "677b64a0-a83a-40f9-a2be-03b821390485",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:7071/api/task/{{tmpUserId}}/{{tmpId}}",
+    "url": "http://localhost:7071/api/task/{{tmpUserId}}/{{tmpId}}",
+    "method": "DELETE",
+    "sortNum": 0,
+    "created": "2022-04-09T04:50:56.862Z",
+    "modified": "2022-04-09T04:50:59.086Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "contains",
+        "value": "application/json"
+      },
+      {
+        "type": "custom-header",
+        "custom": "server",
+        "action": "equal",
+        "value": ""
       }
     ]
   }

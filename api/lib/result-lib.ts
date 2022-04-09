@@ -3,22 +3,26 @@ export enum ResultType {
     Error
 }
 
-export type ResultTypeSuccess<T> = {
+export type ResultBase = {
     type: ResultType,
-    value?: T,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any
+    code: number 
 }
 
-export type ResultTypeError = {
-    type: ResultType,
-    message: string,
-    name: string,
-    details: unknown,
-    code: number | undefined,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any
+export type ResultSuccess<T> = {
+    type: ResultType.Success,
+    code: 200,
+    value: T
 }
 
-export type Result<T> = ResultTypeSuccess<T> | ResultTypeError
+export type ResultError = {
+    type: ResultType.Error,
+    code: number,
+    error: {
+        message: string,
+        name: string,
+        details: unknown
+    }
+}
+
+export type Result<T> = ResultSuccess<T> | ResultError
 

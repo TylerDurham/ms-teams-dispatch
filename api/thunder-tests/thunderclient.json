@@ -580,5 +580,60 @@
         "value": "number"
       }
     ]
+  },
+  {
+    "_id": "431bf29b-fe65-4b24-87ce-744d1e95243c",
+    "colId": "1c7abf22-c8b2-42e5-a70d-9dc1168b0a44",
+    "containerId": "",
+    "name": "task-complete",
+    "url": "http://localhost:7071/api/task/{{tmpUserId}}/{{tmpId}}/complete",
+    "method": "PATCH",
+    "sortNum": 17500,
+    "created": "2022-04-09T03:37:32.870Z",
+    "modified": "2022-04-09T05:06:33.651Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"message\": \"Command completed!\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "contains",
+        "value": "application/json"
+      },
+      {
+        "type": "custom-header",
+        "custom": "server",
+        "action": "equal",
+        "value": ""
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value",
+        "action": "istype",
+        "value": "object"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value.status",
+        "action": "istype",
+        "value": "number"
+      }
+    ]
   }
 ]

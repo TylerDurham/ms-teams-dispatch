@@ -9,7 +9,7 @@
         "patch",
         "post"
       ],
-      "route": "session/{userId}/{id}"
+      "route": "task/{userId}/{id}/complete"
     },
     {
       "type": "http",
@@ -17,5 +17,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/session-update/index.js"
+  "scriptFile": "../dist/task-complete/index.js"
 }
