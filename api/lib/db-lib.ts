@@ -1,5 +1,5 @@
 import * as pkg from '../package.json';
-import { AzureNamedKeyCredential, TableClient } from "@azure/data-tables";
+import { AzureNamedKeyCredential, odata, TableClient } from "@azure/data-tables";
 import { Result, ResultType, ResultTypeError } from "./result-lib";
 import { ApiResponseCode } from "./api-pipeline";
 import { DispatchTaskStatus } from './schema-lib';
@@ -110,7 +110,31 @@ export const getTask = async function( partitionKey: string, rowKey: string ) : 
     }
 }
 
-const handleDbError = ( err: DbError, partitionKey: string, rowKey: string ): ResultTypeError => {
+export const getTasksByUserId = async function (partitionKey: string): Promise<Result<DbDispatchTask[]>> {
+
+    const client = getTableClient();
+    if (client.type == ResultType.Error) { return client as ResultTypeError; }
+
+    try {
+        const tasks = [];
+        const entities = await client.value.listEntities({
+            queryOptions: {
+                filter: odata`PartitionKey eq '${partitionKey}'`
+            }
+        });
+        for await (const entity of entities) {
+            tasks.push(entity);
+        }
+        return {
+            type: ResultType.Success,
+            value: tasks
+        }
+    } catch (error) {
+        return handleDbError(error, partitionKey);
+    }
+}
+
+const handleDbError = ( err: DbError, partitionKey: string, rowKey: string = 'unspecified' ): ResultTypeError => {
     console.error()
     let message = err.message;
     if ( err.name && err.name.toUpperCase() == "RESTERROR" ) {        

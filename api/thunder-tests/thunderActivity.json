@@ -279,5 +279,55 @@
         "value": "{{tmpUserId}}"
       }
     ]
+  },
+  {
+    "_id": "5b6304c8-5013-4573-8866-f1f28d26a42a",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:7071/api/task/{{tmpUserId}}",
+    "url": "http://localhost:7071/api/task/{{tmpUserId}}",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2022-04-09T02:21:11.885Z",
+    "modified": "2022-04-09T02:48:23.907Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "contains",
+        "value": "application/json"
+      },
+      {
+        "type": "custom-header",
+        "custom": "server",
+        "action": "equal",
+        "value": ""
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value",
+        "action": "istype",
+        "value": "array"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value[0].status",
+        "action": "istype",
+        "value": "number"
+      }
+    ]
   }
 ]

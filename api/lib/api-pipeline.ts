@@ -109,7 +109,7 @@ export class ApiPipeline {
         let result: Result<unknown>;
 
         // Check HTTP Request Headers
-        if ( this._headers ) result = this.checkRequestHeaders( req );
+        result = this.checkRequestHeaders( req );
 
         // All good? Validate incoming input values
         if ( result.type == ResultType.Success && this._needToValidate ) result = this._handleValidate( context, req );
@@ -164,7 +164,7 @@ export class ApiPipeline {
                     }
                 }
             }
-        }
+        } 
 
         return {
             type: ResultType.Success

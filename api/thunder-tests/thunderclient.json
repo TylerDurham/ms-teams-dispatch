@@ -530,5 +530,55 @@
         "value": ""
       }
     ]
+  },
+  {
+    "_id": "7b3a25b7-3bad-45e4-8f67-53664d4f66b9",
+    "colId": "1c7abf22-c8b2-42e5-a70d-9dc1168b0a44",
+    "containerId": "",
+    "name": "task-getbyuserid",
+    "url": "http://localhost:7071/api/task/{{tmpUserId}}",
+    "method": "GET",
+    "sortNum": 15000,
+    "created": "2022-04-09T02:20:55.247Z",
+    "modified": "2022-04-09T02:48:23.905Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "contains",
+        "value": "application/json"
+      },
+      {
+        "type": "custom-header",
+        "custom": "server",
+        "action": "equal",
+        "value": ""
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value",
+        "action": "istype",
+        "value": "array"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value[0].status",
+        "action": "istype",
+        "value": "number"
+      }
+    ]
   }
 ]
