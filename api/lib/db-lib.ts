@@ -53,22 +53,23 @@ export type DbDispatchTask = {
     [key: string]: any;
 }
 
-export const completeTask = async function (partitionKey: string, rowKey: string): Promise<Result<DbDispatchTask>> {
+export const patchTask = async function (task: DbDispatchTask): Promise<Result<DbDispatchTask>> {
     const client = getTableClient() as Result<TableClient>;
 
-    if (client.type == ResultType.Error) { return client as ResultError; }
+    if (client.type == ResultType.Error) { return client; }
+
+    const { userId, id, ...record } = task;
+    record.partitionKey = userId;
+    record.rowKey = id;
 
     try {
-        const tmp = await (client as ResultSuccess<TableClient>).value.updateEntity({
-            partitionKey: partitionKey,
-            rowKey: rowKey,
-            status: DispatchTaskStatus.Completed
-        }, "Merge")
+        //@ts-ignore
+        const tmp = await client.value.updateEntity(record, "Merge")
 
-        return await getTask(partitionKey, rowKey);
+        return await getTask(task.userId, task.id);
 
     } catch (err) {
-        return handleDbError(err, partitionKey, rowKey);
+        return handleDbError(err, task.partitionKey, task.rowKey);
     }
 }
 
@@ -85,7 +86,8 @@ export const createTask = async (task: DbDispatchTask): Promise<Result<DbDispatc
     record.rowKey = id;
 
     try {
-        await (client as ResultSuccess<DbDispatchTask>).value.createEntity(record);
+        //@ts-ignore
+        await client.value.createEntity(record);
         return {
             type: ResultType.Success,
             value: task,

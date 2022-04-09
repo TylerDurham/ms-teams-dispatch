@@ -58,7 +58,7 @@
     "method": "POST",
     "sortNum": 5000,
     "created": "2022-04-07T19:12:30.870Z",
-    "modified": "2022-04-09T02:12:03.703Z",
+    "modified": "2022-04-09T06:08:01.024Z",
     "headers": [
       {
         "name": "Accept",
@@ -68,7 +68,7 @@
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"command\": \"com-microsoft-teams:dispatch-task:echo-teams-env\",\n    \"callback\": \"http://localhost:7071/echo\"\n}",
+      "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"command\": \"com-microsoft-teams:dispatch-task:echo-teams-env\",\n    \"callback\": \"http://localhost:7071/api/nnnecho\"\n}",
       "form": []
     },
     "tests": [

@@ -114,7 +114,6 @@ export class ApiPipeline {
         // Check HTTP Request Headers
         result = this.checkRequestHeaders(req); 
 
-
         // All good? Validate incoming input values
         if (result.type == ResultType.Success && this._needToValidate) { result = this._handleValidate(context, req); }
 
@@ -125,6 +124,7 @@ export class ApiPipeline {
         if (result.type == ResultType.Error) {
 
             // Hide error details from external callers.
+            delete result.error.details;
             //const { details, name, ...err} = result.error;
             //result.error = err;
         }
