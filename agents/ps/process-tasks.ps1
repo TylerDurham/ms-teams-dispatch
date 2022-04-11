@@ -5,41 +5,6 @@ param(
 
 [string] $COMMAND_NAMESPACE = "com-microsoft-teams:dispatch-task:";
 
-function Split-TaskCommand {
-    param (
-        [string] $RawCommand
-    )
-
-    return $RawCommand -replace $COMMAND_NAMESPACE
-}
-
-function Process-Tasks {
-    param (
-        $Tasks
-    )
-
-    
-
-    $Tasks | foreach-object {
-        $task = $_;
-        $status = $task.status;
-        $command = Split-TaskCommand -RawCommand $task.command
-        if ($status -eq 1 && $null -ne $command) {`
-            # Task is in 'waiting' status
-            Write-Debug "Executing task with status of ($status) and command of ($command)."
-            $result = & $command
-            if ($result.type -eq 1) {
-
-            }   
-        } else {
-            # Ignore tasks with other status
-            Write-Debug "Skipping task with status of ($status) and command of ($command)."
-        }
-    }
-}
-
-
-
 # Load all libary modules
 Get-ChildItem -Path $PSScriptRoot -Include "*.psm1" -Depth 3 | ForEach-Object {
     #Write-Host "Module $_.Name"
@@ -47,6 +12,41 @@ Get-ChildItem -Path $PSScriptRoot -Include "*.psm1" -Depth 3 | ForEach-Object {
 }
 
 $command = "echo-teams-env"
+
+
+
+function Process-Tasks {
+    param (
+        $Tasks
+    )
+
+    $Tasks | foreach-object {
+        $task = $_;
+        $status = $task.status;
+        $command = Split-TaskCommand -RawCommand $task.command
+        if ($status -eq 1 && $null -ne $command) {
+`
+                # Task is in 'waiting' status
+                Write-Debug "Executing task with status of ($status) and command of ($command)."
+            $result = & $command
+            if ($result.type -eq 1) {
+
+            }   
+        }
+        else {
+            # Ignore tasks with other status
+            Write-Debug "Skipping task with status of ($status) and command of ($command)."
+        }
+    }
+}
+
+function Split-TaskCommand {
+    param (
+        [string] $RawCommand
+    )
+
+    return $RawCommand -replace $COMMAND_NAMESPACE
+}
 
 try {
     $result = (& $Command);
