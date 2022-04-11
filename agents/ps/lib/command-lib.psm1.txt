@@ -1,0 +1,30 @@
+function Execute-Command {
+    param (
+        [string] $Command
+    )
+
+    try { return New-ResultSuccess -Value (& $Command)  }
+    catch { return New-ResultError $_ }
+}
+function Prepare-Command {
+    param (
+        [string] $CommandText
+    )
+
+    return  (Join-Path -Path $PSScriptRoot -ChildPath "tasks" -AdditionalChildPath ($CommandText.Trim() + ".ps1")) 
+}
+
+function Parse-Command {
+    param (
+        [string] $RawCommand
+    )
+
+    [string[]] $data;
+
+    $data = ($task.command -Split $COMMAND_NAMESPACE)
+    if ($data.length -gt 1) {
+        return ($data[$data.length - 1]).Trim();
+    }
+
+    return $null;
+}

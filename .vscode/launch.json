@@ -2,6 +2,27 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "PowerShell Launch Current File",
+      "type": "PowerShell",
+      "request": "launch",
+      "script": "${file}",
+      "args": [
+        "-Debug"
+      ],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "PowerShell Launch Script",
+      "type": "PowerShell",
+      "request": "launch",
+      "script": "${workspaceFolder}/agents/ps/process-tasks.ps1",
+      "args": [
+        "-userId",
+        "test@task-start.com"
+      ],
+      "cwd": "${workspaceFolder}"
+    },
+    {
       "args": [
         "--timeout",
         "999999",
