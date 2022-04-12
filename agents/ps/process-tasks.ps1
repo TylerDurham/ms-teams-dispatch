@@ -1,85 +1,65 @@
 [CmdletBinding()]
 param(
-    [int] $Interval=5
+    [int] $Interval = 5
 )
 
 [string] $COMMAND_NAMESPACE = "com-microsoft-teams:dispatch-task:";
 
 # Load all libary modules
 Get-ChildItem -Path $PSScriptRoot -Include "*.psm1" -Depth 3 | ForEach-Object {
-    #Write-Host "Module $_.Name"
+    Write-debug (("Loading module '" + ($_.Name) + "'.") -replace ".psm1")
     Import-Module -Name ($_.FullName) -WarningAction Ignore -Force
 }
 
-$command = "echo-teams-env"
-
-
-
-function Process-Tasks {
-    param (
-        $Tasks
-    )
-
-    $Tasks | foreach-object {
-        $task = $_;
-        $status = $task.status;
-        $command = Split-TaskCommand -RawCommand $task.command
-        if ($status -eq 1 && $null -ne $command) {
-`
-                # Task is in 'waiting' status
-                Write-Debug "Executing task with status of ($status) and command of ($command)."
-            $result = & $command
-            if ($result.type -eq 1) {
-
-            }   
-        }
-        else {
-            # Ignore tasks with other status
-            Write-Debug "Skipping task with status of ($status) and command of ($command)."
-        }
-    }
-}
-
-function Split-TaskCommand {
-    param (
-        [string] $RawCommand
-    )
-
-    return $RawCommand -replace $COMMAND_NAMESPACE
-}
+Write-Host ("Debug preference: " + $DebugPreference)
 
 try {
-    $result = (& $Command);
-    if ($result.type -eq 1) { Write-Error "Houston, we have a problem: " + $result.message; exit }
+    $result = (& "echo-teams-env");
+    if ($result.type -eq [ResultType]::Error) { Write-Error "Houston, we have a problem: " + $result.message; exit }
     
-    $context    = $result.value;
-    $userId     = $context.UserPrincipalName;
+    $context = $result.value;
+    $userId = $context.UserPrincipalName;
 
     Write-Debug "Checking messages for user '$userId':"
-    $url = $URL_BASE + $userId;
-    $result = Get-TasksForUser -UserId $userId
-    if ($result.type -eq 1) { $message = $result.message; Write-Error "Could not get user's tasks: $message"; exit }
+    $result = Get-TasksForUser -UserId $userId -Debug:$DebugPreference
+    if ($result.type -eq [ResultType]::Error) { $message = $result.message; Write-Error "Could not get user's tasks: $message"; exit }
 
-    $tasks = $result.value;
-    Process-Tasks -Tasks ($tasks);
+    $result.value | ForEach-Object {
+        $task       = $_;
+        $id         = $task.id;
+        $status     = $task.status;
+        $statusText = [DispatchTaskStatus]$status;
+        $command    = ($task.command -replace $COMMAND_NAMESPACE);
 
-} catch {
-    Write-Error "Unexpected error: $_";
-} finally {
-    # Unload our custom modules
-    Get-Module | ForEach-Object {
-        if($_.Path.StartsWith($PSScriptRoot)) {
-            Write-Debug "Removing module '$_.Name'."
-            Remove-Module -Name $_.Name
+        if ($status -eq [DispatchTaskStatus]::Waiting) {
+            # Task is in 'waiting' status
+            Write-Debug "Executing task with status of $statusText ($status) and command of ($command)."
+            $result = & $command
+            if ($result.type -eq [ResultType]::Success) {
+                Write-Debug "Marking task [userId]:$userId [id]:$id complete."
+                 $result = Set-TaskComplete -UserId $userId -Id $id -Payload $result.value -Debug:$DebugPreference
+            } else {
+
+            }
+        } else {
+            # Ignore tasks with other status
+            Write-Debug "Skipping task with status of $statusText ($status) and command of ($command)."
         }
     }
 
-    #Get-Module | ft
-    
 }
-
-
-
+catch {
+    Write-Error "Unexpected error: $_";
+}
+finally {
+    # Unload our custom modules
+    Get-Module | ForEach-Object {
+        if ($_.Path.StartsWith($PSScriptRoot)) {
+            Write-Debug ("Removing module '" + $_.Name + "'.")
+            Remove-Module -Name $_.Name
+        }
+    }    
+}
 
 #Result-Error
 

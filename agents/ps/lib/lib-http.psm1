@@ -1,31 +1,73 @@
+Add-Type @'
+public enum DispatchTaskStatus {
+    Waiting = 1,
+    Completed = 2,
+    Error = 8
+}
+'@
+
+enum HttpMethod  {
+    Get = 1
+    Patch = 9
+}
 $HTTP_HEADERS = @{
     "accept"    = "application/json"
     "content-type" = "application/json"
 } 
+
 [string] $URL_BASE = "http://localhost:7071/api/task/"
 
 function Set-TaskComplete {
     param (
-        $userId,
-        $id,
-        $body
+        $UserId,
+        $Id,
+        $Payload
     )
+
+    $url = $URL_BASE + $UserId + "/" + $Id + "/complete";
+
+    Write-Output (Call-Service -Url $url -Method Patch -Payload $Payload -Debug:$DebugPreference)
 }
 
 function Get-TasksForUser {
+    [CmdletBinding()]
     param (
         [string] $UserId
     )
 
     $url = $URL_BASE + $UserId;
-        
-    Write-Debug "Calling host at '$url'."
-    $response = Invoke-RestMethod -Method Get -Uri $url -Headers $HTTP_HEADERS -SkipHttpErrorCheck -StatusCodeVariable statusCode
-    if ($response.type -eq 0) {
-        return New-ResultSuccess -Value ($response.value)#| ConvertFrom-Json)
+
+    Write-Host $DebugPreference
+    
+    Write-Output (Call-Service -Url $url -Method Get -Debug:$DebugPreference)
+}
+
+function Call-Service {
+    [CmdletBinding()]
+    param (
+        [HttpMethod] $Method,
+        $Url,
+        $Payload = $null
+    )
+
+    $methodName =  ([string]([HttpMethod]$Method )+ "").ToUpper()
+
+    Write-Debug "Calling '$methodName' at '$url'."
+    if ($null -ne $Payload) {
+        $response = Invoke-RestMethod -Method $Method -Uri $Url -Headers $HTTP_HEADERS -Body $Payload -SkipHttpErrorCheck -StatusCodeVariable statusCode
+    } else {
+        $response = Invoke-RestMethod -Method $Method -Uri $Url -Headers $HTTP_HEADERS -SkipHttpErrorCheck -StatusCodeVariable statusCode
+    }
+
+    Write-Debug "'$methodName' at '$url' returned HTTP $statusCode."
+
+    if ($response.type -eq [ResultType]::Success) {
+        Write-Output (New-ResultSuccess -Value ($response.value))
     }
     else {
         Write-Debug "HTTP error '$statusCode' while calling host at '$url'."
-        return New-ResultError -Message $response.error.message
-    }       
+        Write-Output (New-ResultError -Message $response.error.message)
+    }
 }
+
+Export-ModuleMember Get-TasksForUser, Set-TaskComplete

@@ -153,7 +153,10 @@ export const getTasksByUserId = async function (partitionKey: string): Promise<R
             }
         });
         for await (const entity of entities) {
-            tasks.push(entity);
+            const { partitionKey, rowKey, ...record} = entity;
+            record.userId = partitionKey;
+            record.id = rowKey;
+            tasks.push(record);
         }
         return {
             type: ResultType.Success,

@@ -31,13 +31,13 @@ function Get-UserData {
         Language          = $Config.currentWebLanguage
         Theme             = $Config.theme
         ClientVersion     = $Config.previousWebClientVersion
-    } #| ConvertTo-Json -Compress
+    } 
 }
 
 function echo-teams-env {
     $data = Get-UserData
 
-    return New-ResultSuccess -Value $data
+    Write-Output (New-ResultSuccess -Value $data)
 }
 
 Export-ModuleMember -Function echo-teams-env
