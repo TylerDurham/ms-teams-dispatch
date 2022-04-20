@@ -8,7 +8,8 @@ This is how I setup my machine for local development.
 
 ## Prerequisites
 
-Install [Azure Functions Core Tools].
+* Install [Azure Functions Core Tools].
+* Install [PowerShell v.7].
 
 ### Clone the GIT Repo
 
@@ -75,3 +76,4 @@ Sample ```local.settings.json``` file:
 
 [Azure Storage]: https://docs.microsoft.com/en-us/azure/storage/common/storage-introduction
 [Azure Functions Core Tools]: https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v4%2Cwindows%2Ccsharp%2Cportal%2Cbash#v2
+[PowerShell v.7]: https://docs.microsoft.com/en-us/powershell/scripting/whats-new/migrating-from-windows-powershell-51-to-powershell-7?view=powershell-7.2
