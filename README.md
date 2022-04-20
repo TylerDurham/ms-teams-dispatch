@@ -6,6 +6,10 @@ This is a work in progress.
 
 This is how I setup my machine for local development.
 
+## Prerequisites
+
+Install [Azure Functions Core Tools].
+
 ### Clone the GIT Repo
 
 Clone the GIT repo by running the following command(s):
@@ -70,3 +74,4 @@ Sample ```local.settings.json``` file:
 ```
 
 [Azure Storage]: https://docs.microsoft.com/en-us/azure/storage/common/storage-introduction
+[Azure Functions Core Tools]: https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v4%2Cwindows%2Ccsharp%2Cportal%2Cbash#v2
