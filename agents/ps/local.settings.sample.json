@@ -1,0 +1,12 @@
+{
+    "environments": {
+        "development": {
+            "SERVICE_URL": "http://localhost:7071/api/task/",
+            "SERVICE_TOKEN": ""
+        },
+        "default": {
+            "SERVICE_URL": "YOUR_SERVICE_URL",
+            "SERVICE_TOKEN": "YOUR_SERVICE_TOKEN"
+        }
+    }
+} 
