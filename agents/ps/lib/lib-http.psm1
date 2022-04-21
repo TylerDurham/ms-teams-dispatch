@@ -16,6 +16,8 @@ $HTTP_HEADERS = @{
 } 
 
 [string] $URL_BASE = "http://localhost:7071/api/task/"
+#[string] $URL_BASE = "https://ms-teams-dispatch.azurewebsites.net"
+[string] $KEY       = "w7sNHBmI83B8SRoXA1jVV8QI2kc7ynQU0aYwB0Tcc/yHzrRpY383ag=="
 
 function Set-TaskComplete {
     param (
@@ -24,7 +26,7 @@ function Set-TaskComplete {
         $Payload
     )
 
-    $url = $URL_BASE + $UserId + "/" + $Id + "/complete";
+    $url = $URL_BASE + $UserId + "/api/task/" + $Id + "/complete&code=" & $KEY;
 
     Write-Output (Call-Service -Url $url -Method Patch -Payload $Payload -Debug:$DebugPreference)
 }
@@ -35,7 +37,7 @@ function Get-TasksForUser {
         [string] $UserId
     )
 
-    $url = $URL_BASE + $UserId;
+    $url = $URL_BASE + "/api/task/" + $UserId + "?code=" + $KEY;
 
     Write-Host $DebugPreference
     

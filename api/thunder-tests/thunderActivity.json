@@ -82,10 +82,49 @@
     "method": "POST",
     "sortNum": 0,
     "created": "2022-04-07T19:12:30.870Z",
-    "modified": "2022-04-07T21:33:57.781Z",
-    "headers": [],
+    "modified": "2022-04-20T21:52:13.775Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/xml"
+      },
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
     "params": [],
-    "tests": []
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"command\": \"com-microsoft-teams:dispatch:echo-teams-env\",\n    \"callback\": \"http://localhost:7071/echo\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "400"
+      },
+      {
+        "type": "custom-header",
+        "custom": "server",
+        "action": "equal",
+        "value": ""
+      },
+      {
+        "type": "json-query",
+        "custom": "json.type",
+        "action": "equal",
+        "value": "1"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.message",
+        "action": "equal",
+        "value": "Required header \"accept\" with a value of \"application/json\" is missing."
+      }
+    ]
   },
   {
     "_id": "bd48ea4e-e924-4653-a002-7e121cb364ad",
@@ -216,17 +255,21 @@
     "method": "POST",
     "sortNum": 0,
     "created": "2022-04-09T02:06:47.775Z",
-    "modified": "2022-04-12T05:19:18.074Z",
+    "modified": "2022-04-20T22:22:48.571Z",
     "headers": [
       {
         "name": "Accept",
+        "value": "application/xml"
+      },
+      {
+        "name": "Content-Type",
         "value": "application/json"
       }
     ],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"command\": \"com-microsoft-teams:dispatch-task:echo-teams-env\",\n    \"callback\": \"http://localhost:7071/api/echo\"\n}",
+      "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"command\": \"com-microsoft-teams:dispatch:echo-teams-env\",\n    \"callback\": \"http://localhost:7071/echo\"\n}",
       "form": []
     },
     "tests": [
@@ -234,7 +277,7 @@
         "type": "res-code",
         "custom": "",
         "action": "equal",
-        "value": "200"
+        "value": "400"
       },
       {
         "type": "custom-header",
@@ -243,40 +286,16 @@
         "value": ""
       },
       {
-        "type": "Content-Type",
-        "custom": "",
-        "action": "contains",
-        "value": "application/json"
-      },
-      {
         "type": "json-query",
         "custom": "json.type",
-        "action": "equal",
-        "value": "0"
-      },
-      {
-        "type": "json-query",
-        "custom": "json.value.id",
-        "action": "istype",
-        "value": "string"
-      },
-      {
-        "type": "json-query",
-        "custom": "json.value.status",
         "action": "equal",
         "value": "1"
       },
       {
-        "type": "set-env-var",
-        "custom": "json.value.id",
-        "action": "setto",
-        "value": "{{tmpId}}"
-      },
-      {
-        "type": "set-env-var",
-        "custom": "json.value.userId",
-        "action": "setto",
-        "value": "{{tmpUserId}}"
+        "type": "json-query",
+        "custom": "json.message",
+        "action": "equal",
+        "value": "Required header \"accept\" with a value of \"application/json\" is missing."
       }
     ]
   },
@@ -420,6 +439,158 @@
         "custom": "server",
         "action": "equal",
         "value": ""
+      }
+    ]
+  },
+  {
+    "_id": "fd580dad-22a1-486e-a269-6e4e1a46b4f2",
+    "colId": "history",
+    "containerId": "",
+    "name": "{{url}}",
+    "url": "{{url}}",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2022-04-20T21:19:37.876Z",
+    "modified": "2022-04-20T21:19:38.357Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"command\": \"com-microsoft-teams:dispatch-task:echo-teams-env\",\n    \"callback\": \"http://localhost:7071/api/echo\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "custom-header",
+        "custom": "server",
+        "action": "equal",
+        "value": ""
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "contains",
+        "value": "application/json"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.type",
+        "action": "equal",
+        "value": "0"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value.id",
+        "action": "istype",
+        "value": "string"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value.status",
+        "action": "equal",
+        "value": "1"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.value.id",
+        "action": "setto",
+        "value": "{{tmpId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.value.userId",
+        "action": "setto",
+        "value": "{{tmpUserId}}"
+      }
+    ]
+  },
+  {
+    "_id": "27d2e11e-2a9c-4896-9f10-ed4c24b2d6ca",
+    "colId": "history",
+    "containerId": "",
+    "name": "{{host}}/api/task/?code={{code}}",
+    "url": "{{host}}/api/task/?code={{code}}",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2022-04-20T21:43:28.996Z",
+    "modified": "2022-04-20T22:22:28.868Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
+    "params": [
+      {
+        "name": "code",
+        "value": "{{code}}",
+        "isPath": false
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"command\": \"com-microsoft-teams:dispatch-task:echo-teams-env\",\n    \"callback\": \"http://localhost:7071/api/echo\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      },
+      {
+        "type": "custom-header",
+        "custom": "server",
+        "action": "equal",
+        "value": ""
+      },
+      {
+        "type": "Content-Type",
+        "custom": "",
+        "action": "contains",
+        "value": "application/json"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.type",
+        "action": "equal",
+        "value": "0"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value.id",
+        "action": "istype",
+        "value": "string"
+      },
+      {
+        "type": "json-query",
+        "custom": "json.value.status",
+        "action": "equal",
+        "value": "1"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.value.id",
+        "action": "setto",
+        "value": "{{tmpId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.value.userId",
+        "action": "setto",
+        "value": "{{tmpUserId}}"
       }
     ]
   }

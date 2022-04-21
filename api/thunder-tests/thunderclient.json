@@ -54,18 +54,24 @@
     "colId": "1c7abf22-c8b2-42e5-a70d-9dc1168b0a44",
     "containerId": "",
     "name": "task-start",
-    "url": "http://localhost:7071/api/task",
+    "url": "{{host}}/api/task/?code={{code}}",
     "method": "POST",
     "sortNum": 5000,
     "created": "2022-04-07T19:12:30.870Z",
-    "modified": "2022-04-09T06:29:41.443Z",
+    "modified": "2022-04-20T21:43:26.082Z",
     "headers": [
       {
         "name": "Accept",
         "value": "application/json"
       }
     ],
-    "params": [],
+    "params": [
+      {
+        "name": "code",
+        "value": "{{code}}",
+        "isPath": false
+      }
+    ],
     "body": {
       "type": "json",
       "raw": "{\n    \"userId\": \"{{userId}}\",\n    \"command\": \"com-microsoft-teams:dispatch-task:echo-teams-env\",\n    \"callback\": \"http://localhost:7071/api/echo\"\n}",
@@ -180,11 +186,11 @@
     "colId": "0994be50-684a-4bfb-b5a4-969874438d7c",
     "containerId": "",
     "name": "bad accept header",
-    "url": "http://localhost:7071/api/session",
+    "url": "http://localhost:7071/api/task",
     "method": "POST",
     "sortNum": 30000,
     "created": "2022-04-07T21:58:45.083Z",
-    "modified": "2022-04-07T21:59:29.636Z",
+    "modified": "2022-04-20T21:52:21.118Z",
     "headers": [
       {
         "name": "Accept",

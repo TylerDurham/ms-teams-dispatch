@@ -111,6 +111,9 @@ export class ApiPipeline {
 
         let result;
 
+        console.log(`START ${req.method} REQUEST`)
+        console.log({ "method": req.method, "headers": { "accept": req.headers["accept"], "content-type": req.headers["content-type"]}, "body": req.body});
+        
         // Check HTTP Request Headers
         result = this.checkRequestHeaders(req); 
 
@@ -141,6 +144,8 @@ export class ApiPipeline {
             },
             body: response
         }
+        console.log(`FINISH ${req.method}`)
+        console.log({ statusCode: code, body: context.res.body});
         context.done();
 
     }

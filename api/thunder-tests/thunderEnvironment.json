@@ -20,7 +20,7 @@
     "default": true,
     "sortNum": 10000,
     "created": "2022-04-07T21:50:46.575Z",
-    "modified": "2022-04-20T20:04:00.195Z",
+    "modified": "2022-04-20T22:22:28.864Z",
     "data": [
       {
         "name": "userId",
@@ -28,11 +28,23 @@
       },
       {
         "name": "tmpId",
-        "value": "8638349514960289"
+        "value": "8638349506651194"
       },
       {
         "name": "tmpUserId",
         "value": "tyler@3bcdst.onmicrosoft.com"
+      },
+      {
+        "name": "host",
+        "value": "http://localhost:7071"
+      },
+      {
+        "name": "code",
+        "value": "NYi2IYajBCFPpQ6QaHwri2sINNHJu5Dp9tZH0sCvvkkiM9HICmd/Tw=="
+      },
+      {
+        "name": "host-production",
+        "value": "http://localhost:7071/ https://ms-teams-dispatch.azurewebsites.net"
       }
     ]
   }
