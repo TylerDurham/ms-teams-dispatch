@@ -1,6 +1,7 @@
 [CmdletBinding()]
 param(
-    [int] $Interval = 5
+    [int] $Interval = 5,
+    [string] $EnvironmentName = "default"
 )
 
 [string] $COMMAND_NAMESPACE = "com-microsoft-teams:dispatch-task:";
@@ -10,6 +11,10 @@ Get-ChildItem -Path $PSScriptRoot -Include "*.psm1" -Depth 3 | ForEach-Object {
     Write-debug (("Loading module '" + ($_.Name) + "'.") -replace ".psm1")
     Import-Module -Name ($_.FullName) -WarningAction Ignore -Force
 }
+
+Load-Env -name $EnvironmentName
+
+Exit
 
 Write-Host ("Debug preference: " + $DebugPreference)
 
