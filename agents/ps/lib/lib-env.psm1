@@ -1,13 +1,16 @@
 Function Load-Env {
-    param( $name = "default")
+    param($name = "production")
 
-    $config = Get-Content -Path .\local.settings.json | ConvertFrom-Json
+    $settingsFile = (Split-Path -Path $PSScriptRoot -Parent) + "\local.settings.json" # (Resolve-Path -Path "local.settings.json")
 
+    $config = (Get-Content -Path $settingsFile | ConvertFrom-Json -AsHashtable).env
+    $env = $config[$name]
     
-
-    Write-Host $config.environments[ $name ].SERVICE_URL
-
-    
+    $env.Keys | ForEach-Object {
+        #Write-Host $_
+        #Write-Host $env[$_]
+        Set-Item "ENV:$_" $env[$_]
+    }
 }
 
 Export-ModuleMember Load-Env
