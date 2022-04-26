@@ -12,7 +12,8 @@ Get-ChildItem -Path $PSScriptRoot -Include "*.psm1" -Depth 3 | ForEach-Object {
     Import-Module -Name ($_.FullName) -WarningAction Ignore -Force
 }
 
-$config = Load-Env -name $EnvironmentName
+# Load local.settings.json into $ENV
+Load-Env -name $EnvironmentName
 
 
 try {
