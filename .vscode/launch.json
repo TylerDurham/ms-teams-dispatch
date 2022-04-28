@@ -17,6 +17,8 @@
       "request": "launch",
       "script": "${workspaceFolder}/agents/ps/process-tasks.ps1",
       "args": [
+        "-UserIdOverride",
+        "tyler@3bcdst.onmicrosoft.com",
         "-Debug"
       ],
       "cwd": "${workspaceFolder}"
