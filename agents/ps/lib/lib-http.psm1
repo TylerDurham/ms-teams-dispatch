@@ -15,9 +15,6 @@ $HTTP_HEADERS = @{
     "content-type" = "application/json"
 } 
 
-[string] $URL_BASE  = $env:API_BASE_URL
-[string] $KEY       = $env:API_CODE
-
 function Set-TaskComplete {
     param (
         $UserId,
@@ -25,7 +22,7 @@ function Set-TaskComplete {
         $Payload
     )
 
-    $url = $URL_BASE + $UserId + "/api/task/" + $Id + "/complete&code=" & $KEY;
+    [string] $url = $env:API_TASK_GET_BY_USER_ID.Replace("{userId}", $UserId).Replace("{id}", $id);
 
     Write-Output (Call-Service -Url $url -Method Patch -Payload $Payload -Debug:$DebugPreference)
 }
@@ -36,7 +33,7 @@ function Get-TasksForUser {
         [string] $UserId
     )
 
-    $url = $URL_BASE + "/" + $UserId + "?code=" + $KEY;
+    [string] $url = $env:API_TASK_GET_BY_USER_ID.Replace("{userId}", $UserId);
 
     Write-Host $DebugPreference
     
