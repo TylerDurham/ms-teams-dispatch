@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [int] $Interval = 5,
-    [string] $EnvironmentName = "default"
+    [string] $EnvironmentName = "production"
 )
 
 [string] $COMMAND_NAMESPACE = "com-microsoft-teams:dispatch-task:";
@@ -12,11 +12,9 @@ Get-ChildItem -Path $PSScriptRoot -Include "*.psm1" -Depth 3 | ForEach-Object {
     Import-Module -Name ($_.FullName) -WarningAction Ignore -Force
 }
 
+# Load local.settings.json into $ENV
 Load-Env -name $EnvironmentName
 
-Exit
-
-Write-Host ("Debug preference: " + $DebugPreference)
 
 try {
     $result = (& "echo-teams-env");
@@ -29,29 +27,34 @@ try {
     $result = Get-TasksForUser -UserId $userId -Debug:$DebugPreference
     if ($result.type -eq [ResultType]::Error) { $message = $result.message; Write-Error "Could not get user's tasks: $message"; exit }
 
-    $result.value | ForEach-Object {
-        $task       = $_;
-        $id         = $task.id;
-        $status     = $task.status;
-        $statusText = [DispatchTaskStatus]$status;
-        $command    = ($task.command -replace $COMMAND_NAMESPACE);
+    if ($null -eq $result.value) {
+        Write-Host "No tasks to process for user '$userId'."
+    } else {
+        $result.value | ForEach-Object {
+            $task = $_;
+            $id = $task.id;
+            $status = $task.status;
+            $statusText = [DispatchTaskStatus]$status;
+            $command = ($task.command -replace $COMMAND_NAMESPACE);
 
-        if ($status -eq [DispatchTaskStatus]::Waiting) {
-            # Task is in 'waiting' status
-            Write-Debug "Executing task with status of $statusText ($status) and command of ($command)."
-            $result = & $command
-            if ($result.type -eq [ResultType]::Success) {
-                Write-Debug "Marking task [userId]:$userId [id]:$id complete."
-                 $result = Set-TaskComplete -UserId $userId -Id $id -Payload $result.value -Debug:$DebugPreference
-            } else {
+            if ($status -eq [DispatchTaskStatus]::Waiting) {
+                # Task is in 'waiting' status
+                Write-Debug "Executing task with status of $statusText ($status) and command of ($command)."
+                $result = & $command
+                if ($result.type -eq [ResultType]::Success) {
+                    Write-Debug "Marking task [userId]:$userId [id]:$id complete."
+                    $result = Set-TaskComplete -UserId $userId -Id $id -Payload $result.value -Debug:$DebugPreference
+                }
+                else {
 
+                }
             }
-        } else {
-            # Ignore tasks with other status
-            Write-Debug "Skipping task with status of $statusText ($status) and command of ($command)."
+            else {
+                # Ignore tasks with other status
+                Write-Debug "Skipping task with status of $statusText ($status) and command of ($command)."
+            }
         }
     }
-
 }
 catch {
     Write-Error "Unexpected error: $_";
