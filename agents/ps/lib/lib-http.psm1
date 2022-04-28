@@ -22,7 +22,7 @@ function Set-TaskComplete {
         $Payload
     )
 
-    [string] $url = $env:API_TASK_GET_BY_USER_ID.Replace("{userId}", $UserId).Replace("{id}", $id);
+    [string] $url = $env:API_TASK_COMPLETE.Replace("{userId}", $UserId).Replace("{id}", $id);
 
     Write-Output (Call-Service -Url $url -Method Patch -Payload $Payload -Debug:$DebugPreference)
 }

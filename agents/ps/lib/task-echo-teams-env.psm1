@@ -36,8 +36,11 @@ function Get-UserData {
 
 function echo-teams-env {
     $data = Get-UserData
+    
+    $result = (New-ResultSuccess -Value $data)
 
-    Write-Output (New-ResultSuccess -Value $data)
+    #
+    Write-Output $result
 }
 
 Export-ModuleMember -Function echo-teams-env

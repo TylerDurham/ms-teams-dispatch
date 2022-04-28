@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
     [int] $Interval = 5,
-    [string] $EnvironmentName = "production"
+    [string] $EnvironmentName = "production",
+    [string] $UserIdOverride
 )
 
 [string] $COMMAND_NAMESPACE = "com-microsoft-teams:dispatch-task:";
@@ -22,6 +23,7 @@ try {
     
     $context = $result.value;
     $userId = $context.UserPrincipalName;
+    if ($UserIdOverride.Trim().Length -gt 0) { $userId = $UserIdOverride }
 
     Write-Debug "Checking messages for user '$userId':"
     $result = Get-TasksForUser -UserId $userId -Debug:$DebugPreference
@@ -42,8 +44,11 @@ try {
                 Write-Debug "Executing task with status of $statusText ($status) and command of ($command)."
                 $result = & $command
                 if ($result.type -eq [ResultType]::Success) {
-                    Write-Debug "Marking task [userId]:$userId [id]:$id complete."
-                    $result = Set-TaskComplete -UserId $userId -Id $id -Payload $result.value -Debug:$DebugPreference
+                    $json = $result.value | ConvertTo-Json -Compress
+                    $payload = '{ "type": 0, "command": "' + $task.command + '", "value": ' + $json + ' }'
+                    Write-Debug "Marking task [userId]:$userId [id]:$id complete with payload:"
+                    Write-Debug $payload
+                    $result = Set-TaskComplete -UserId $userId -Id $id -Payload ( $payload ) -Debug:$DebugPreference
                 }
                 else {
 
