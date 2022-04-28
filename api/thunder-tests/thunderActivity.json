@@ -358,7 +358,7 @@
     "method": "PATCH",
     "sortNum": 0,
     "created": "2022-04-09T03:38:04.369Z",
-    "modified": "2022-04-09T06:29:50.758Z",
+    "modified": "2022-04-28T19:59:28.067Z",
     "headers": [
       {
         "name": "Accept",
@@ -368,7 +368,7 @@
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n    \"message\": \"Command completed!\"\n}",
+      "raw": "{\r\n    \"type\":0,\r\n    \"value\": {\r\n        \"UserPrincipalName\": \"{{userId}}\",\r\n        \"ObjectId\": \"<a-test-guid>\",\r\n        \"TenantId\": \"<a-test-guid>\",\r\n        \"Language\": \"en-US\",\r\n        \"Theme\": \"dark\",\r\n        \"ClientVersion\": \"27/1.0.0.2022042120\"\r\n    }\r\n}",
       "form": []
     },
     "tests": [
@@ -524,7 +524,7 @@
     "method": "POST",
     "sortNum": 0,
     "created": "2022-04-20T21:43:28.996Z",
-    "modified": "2022-04-20T22:22:28.868Z",
+    "modified": "2022-04-28T19:41:40.240Z",
     "headers": [
       {
         "name": "Accept",

@@ -6,6 +6,8 @@ import * as axios from 'axios';
 import { object } from "joi";
 
 const handleCallback = async function (url: string, payload: object | undefined): Promise<Result<object>> {
+    console.log(`Calling ${url} with payload:`)
+    console.log(payload)
     try {
         const response = await axios.default.post(url, payload);
         return {

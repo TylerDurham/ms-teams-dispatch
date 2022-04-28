@@ -596,7 +596,7 @@
     "method": "PATCH",
     "sortNum": 17500,
     "created": "2022-04-09T03:37:32.870Z",
-    "modified": "2022-04-09T05:06:33.651Z",
+    "modified": "2022-04-28T19:59:28.056Z",
     "headers": [
       {
         "name": "Accept",
@@ -606,7 +606,7 @@
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n    \"message\": \"Command completed!\"\n}",
+      "raw": "{\r\n    \"type\":0,\r\n    \"value\": {\r\n        \"UserPrincipalName\": \"{{userId}}\",\r\n        \"ObjectId\": \"<a-test-guid>\",\r\n        \"TenantId\": \"<a-test-guid>\",\r\n        \"Language\": \"en-US\",\r\n        \"Theme\": \"dark\",\r\n        \"ClientVersion\": \"27/1.0.0.2022042120\"\r\n    }\r\n}",
       "form": []
     },
     "tests": [
